@@ -18,7 +18,7 @@ export default function Input({
         disabled={isDisabled || isLoading}
         placeholder={placeholder}
         {...props}
-        className={`border border-gray-300 w-full rounded-lg px-3 py-2 md:text-sm focus:outline-none focus:border-black/90 transition-colors duration-300 ${className}`}
+        className={`border border-gray-300 w-full rounded-lg px-3 py-2 md:text-sm focus:outline-none focus:border-black/90 transition-colors duration-300 disabled:cursor-not-allowed disabled:opacity-80 ${className}`}
       />
     </div>
   );
