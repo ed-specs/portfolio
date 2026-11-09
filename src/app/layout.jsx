@@ -1,5 +1,5 @@
 import "./globals.css";
-import { inter } from "./components/fonts/font";
+import { inter } from "../components/fonts/font";
 
 export const viewport = {
   width: "device-width",

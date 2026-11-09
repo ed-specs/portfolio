@@ -10,6 +10,7 @@ export default function SignInForm() {
     <div className="flex flex-col gap-6 w-full md:max-w-sm p-5">
       {/* validation banner */}
       {/* <ValidationBanner message="Incorrect email or password." /> */}
+
       {/* logo */}
       <div className="flex flex-col">
         <span className=" text-gray-500">Welcome back,</span>
