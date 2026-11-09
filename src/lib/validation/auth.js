@@ -3,7 +3,6 @@ import { z } from "zod";
 export const signInSchema = z.object({
   email: z
     .string()
-    .string()
     .min(1, "Email is required.")
     .email("Invalid email address.")
     .max(255, "Email must be less than 255 characters."),

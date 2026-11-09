@@ -1,5 +1,6 @@
 export default function Input({
   children,
+  id,
   label = "",
   isLoading = false,
   isDisabled = false,
@@ -10,7 +11,7 @@ export default function Input({
 }) {
   return (
     <div className="flex flex-col gap-1">
-      <label htmlFor={label} className="text-sm text-gray-500">
+      <label htmlFor={id} className="text-sm text-gray-500">
         {label}
       </label>
       <input

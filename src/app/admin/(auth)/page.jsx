@@ -9,23 +9,35 @@ export default function SignIn() {
   const [isLoading, setIsLoading] = useState(false);
   const [serverErrorMsg, setServerErrorMsg] = useState("");
 
-  const handleLogIn = async (formData) => {
+  const handleLogIn = async (credentials) => {
     setIsLoading(true);
     setServerErrorMsg("");
 
-    const result = SignInAction(formData);
+    try {
+      const result = await SignInAction(credentials);
 
-    if (result.error) {
-      setServerErrorMsg(result.error);
+      if (!result.success) {
+        setServerErrorMsg(result.error);
+        return;
+      }
+
+      router.push("/dashboard");
+      router.refresh();
+    } catch (err) {
+      setServerErrorMsg(
+        "An unexpected connection error occured. Please try again later.",
+      );
+    } finally {
       setIsLoading(false);
-      return;
     }
-
-    router.push("/dashboard");
   };
   return (
     <div className="min-h-svh md:min-h-screen flex flex-col gap-6  items-center justify-center">
-      <SignInForm />
+      <SignInForm
+        onSubmit={handleLogIn}
+        isLoading={isLoading}
+        serverErrorMsg={serverErrorMsg}
+      />
     </div>
   );
 }

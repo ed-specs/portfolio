@@ -5,21 +5,23 @@ import { signInSchema } from "../../lib/validation/auth";
 
 export async function SignInAction({ rawFormData }) {
   // 1. validate rules on the zod
-  const validationResult = signInSchema.safeParse({ rawFormData });
+  const validation = signInSchema.safeParse({ rawFormData });
 
-  if (!validationResult.success) {
-    return { error: validationResult.error.issues[0].message };
+  if (!validation.success) {
+    return { success: false, error: validation.error.issues[0].message };
   }
+
+  const { email, password } = validation.data;
 
   //   2. check credentials on supabase
   const supabase = await createClient();
   const { error } = await supabase.auth.SignInWithpassword({
-    email: check.auth.email,
-    password: check.auth.password,
+    email,
+    password,
   });
 
   if (error) {
-    return { error: "Invalid email or password." };
+    return { success: false, error: "Invalid email or password." };
   }
 
   return { success: true };
