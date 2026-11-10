@@ -2,6 +2,7 @@
 const nextConfig = {
   /* config options here */
   cacheComponents: true,
+  allowedDevOrigins: ["192.168.68.207"],
   partialPrefetching: true,
   reactCompiler: true,
   turbopack: {
