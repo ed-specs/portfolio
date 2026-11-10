@@ -18,7 +18,7 @@ export default function SignInForm({
     e.preventDefault();
     setClientErrorMsg("");
 
-    if (!email) {
+    if (!email.trim()) {
       setClientErrorMsg("Email is required.");
       return;
     }
@@ -30,11 +30,6 @@ export default function SignInForm({
 
     if (!password) {
       setClientErrorMsg("Password is required.");
-      return;
-    }
-
-    if (!email && !password) {
-      setClientErrorMsg("Please fill in all fields.");
       return;
     }
 
@@ -59,6 +54,7 @@ export default function SignInForm({
       {/* sign in form */}
       <form onSubmit={handleSubmit} className="flex flex-col gap-3">
         <Input
+          id="email"
           label="Email Address"
           type="email"
           placeholder="you@example.com"
@@ -67,6 +63,7 @@ export default function SignInForm({
           required
         />
         <Input
+          id="password"
           label="Password"
           type="password"
           placeholder="••••••••"
@@ -79,9 +76,12 @@ export default function SignInForm({
             Sign In
           </Button>
           <Link
-            href="/forgot-password"
-            disabled={isLoading}
-            className="bg-gray-300/90 hover:bg-gray-300/80 transition-colors duration-300 px-3 py-2 md:text-sm rounded-lg flex items-center justify-center gap-3 cursor-pointer disabled:cursor-not-allowed disabled:opacity-80"
+            href={isLoading ? "#" : "/forgot-password"}
+            className={`bg-gray-300/90 hover:bg-gray-300/80 transition-colors duration-300 px-3 py-2 md:text-sm rounded-lg flex items-center justify-center gap-3 ${
+              isLoading
+                ? "pointer-events-none opacity-50 cursor-not-allowed"
+                : "cursor-pointer"
+            }`}
           >
             Forgot password
           </Link>

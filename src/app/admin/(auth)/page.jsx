@@ -9,21 +9,26 @@ export default function SignIn() {
   const [isLoading, setIsLoading] = useState(false);
   const [serverErrorMsg, setServerErrorMsg] = useState("");
 
-  const handleLogIn = async (credentials) => {
+  const handleLogIn = async (formData) => {
     setIsLoading(true);
     setServerErrorMsg("");
 
     try {
-      const result = await SignInAction(credentials);
+      console.log("submitting credentials:", formData);
+      const result = await SignInAction(formData);
 
       if (!result.success) {
-        setServerErrorMsg(result.error);
+        console.log(result.error);
+        setServerErrorMsg(
+          "An unexpected connection error occured. Please try again later.",
+        );
         return;
       }
 
-      router.push("/dashboard");
+      router.push("/admin/dashboard");
       router.refresh();
     } catch (err) {
+      console.log(err);
       setServerErrorMsg(
         "An unexpected connection error occured. Please try again later.",
       );

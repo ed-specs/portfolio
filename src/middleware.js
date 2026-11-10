@@ -2,13 +2,13 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse } from "next/server";
 
 // declared routes
-const protectedRoutes = ["/dashboard"];
+const protectedRoutes = ["/admin/dashboard"];
 const authRoutes = ["/", "/forgot-password"];
 
 export async function middleware(request) {
   let response = NextResponse.next({
     request: {
-      header: request.headers,
+      headers: request.headers,
     },
   });
 
@@ -46,7 +46,9 @@ export async function middleware(request) {
   const isProtected = protectedRoutes.some((route) =>
     pathname.startsWith(route),
   );
-  const isAuth = authRoutes.some((route) => pathname.startsWith(route));
+  const isAuth = authRoutes.some((route) =>
+    route === "/" ? pathname === "/" : pathname.startsWith(route),
+  );
 
   // Case 1: Unauthenticated user visits protected page -> redirect to login
   if (isProtected && !user) {
