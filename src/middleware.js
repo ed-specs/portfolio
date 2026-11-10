@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 // declared routes
 const protectedRoutes = ["/admin/dashboard"];
-const authRoutes = ["/", "/forgot-password"];
+const authRoutes = ["/admin", "/forgot-password"];
 
 export async function middleware(request) {
   let response = NextResponse.next({
@@ -47,7 +47,7 @@ export async function middleware(request) {
     pathname.startsWith(route),
   );
   const isAuth = authRoutes.some((route) =>
-    route === "/" ? pathname === "/" : pathname.startsWith(route),
+    route === "/admin" ? pathname === "/admin" : pathname.startsWith(route),
   );
 
   // Case 1: Unauthenticated user visits protected page -> redirect to login

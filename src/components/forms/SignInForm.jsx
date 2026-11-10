@@ -2,7 +2,7 @@
 import { useState } from "react";
 import Button from "../ui/Button";
 import Input from "../ui/Input";
-import ValidationBanner from "../ui/ValidationBanner";
+import ErrorBanner from "../ui/ErrorBanner";
 import Link from "next/link";
 
 export default function SignInForm({
@@ -40,19 +40,22 @@ export default function SignInForm({
 
   return (
     <div className="flex flex-col gap-6 w-full md:max-w-sm p-5">
-      {/* validation banner */}
-      {activeErrorMsg && <ValidationBanner message={activeErrorMsg} />}
-
       {/* logo */}
-      <div className="flex flex-col">
-        <span className=" text-gray-500">Welcome back,</span>
-        <h1 className="text-2xl font-bold tracking-tight">Edward Gatbonton</h1>
+      <div className="flex flex-col text-center">
+        {/* <span className=" text-gray-500">Welcome back,</span> */}
+        <h1 className="text-2xl font-bold tracking-tight">
+          Edward's Portfolio
+        </h1>
+        <span className="text-gray-500 text-sm text-center">
+          Sign in to your account.
+        </span>
       </div>
 
-      <span className="text-gray-500 text-sm">Sign in to your account.</span>
+      {/* error banner */}
+      {activeErrorMsg && <ErrorBanner message={activeErrorMsg} />}
 
       {/* sign in form */}
-      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-3.5">
         <Input
           id="email"
           label="Email Address"
@@ -75,7 +78,7 @@ export default function SignInForm({
           <Button type="submit" isLoading={isLoading}>
             Sign In
           </Button>
-          <Link
+          {/* <Link
             href={isLoading ? "#" : "/forgot-password"}
             className={`bg-gray-300/90 hover:bg-gray-300/80 transition-colors duration-300 px-3 py-2 md:text-sm rounded-lg flex items-center justify-center gap-3 ${
               isLoading
@@ -84,7 +87,7 @@ export default function SignInForm({
             }`}
           >
             Forgot password
-          </Link>
+          </Link> */}
         </div>
       </form>
     </div>

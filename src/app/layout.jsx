@@ -1,5 +1,5 @@
 import "./globals.css";
-import { inter } from "../components/fonts/font";
+import { jetbrainsMono } from "../components/fonts/font";
 
 export const viewport = {
   width: "device-width",
@@ -15,9 +15,9 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${inter.className} antialiased`}>
+    <html lang="en" className={`${jetbrainsMono.className} antialiased`}>
       <body className="min-h-svh md:min-h-screen text-base text-black/90">
-        <div className="flex flex-col gap-6 container mx-auto w-full max-w-5xl">
+        <div className="flex flex-col gap-6 container mx-auto w-full max-w-6xl">
           {children}
         </div>
       </body>
