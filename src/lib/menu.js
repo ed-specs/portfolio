@@ -6,8 +6,8 @@ import {
   Menu,
   X,
   FolderOpenDot,
-  BriefcaseBusiness,
   Target,
+  Layers,
   BookUser,
   LayoutDashboard,
 } from "lucide-react";
@@ -16,8 +16,8 @@ const MENU_OPTIONS = [
   { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
   { name: "About Me", href: "/admin/about-me", icon: BookUser },
   { name: "Projects", href: "/admin/projects", icon: FolderOpenDot },
-  { name: "Experience", href: "/admin/experience", icon: BriefcaseBusiness },
-  { name: "Skills", href: "/admin/skills", icon: Target },
+  { name: "Experience", href: "/admin/experience", icon: Target },
+  { name: "Tech Stacks", href: "/admin/tech-stacks", icon: Layers },
 ];
 
 export default function MenuOptions() {
