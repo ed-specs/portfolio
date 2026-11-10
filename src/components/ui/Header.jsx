@@ -13,7 +13,7 @@ export default function HeaderSection() {
     <header className="lg:hidden sticky top-0 left-0 flex items-center justify-between px-5 py-2 md:py-3 border-b border-gray-300">
       {/* logo */}
       <div className="flex flex-1">
-        <h1 className="font-bold text-lg md:text-xl">Portfolio</h1>
+        <h1 className="font-bold text-lg md:text-xl">Portfolio.</h1>
       </div>
       {/* menu button */}
       <div className="flex items-center justify-center"></div>

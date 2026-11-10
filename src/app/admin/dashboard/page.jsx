@@ -7,7 +7,7 @@ export default function Dashboard() {
       {/* left (sidebar)*/}
       <Sidebar />
       {/* right */}
-      <div className="flex flex-1 flex-col  h-250">asd</div>
+      <div className="flex flex-1 flex-col gap-6 p-5 ">asd</div>
     </div>
   );
 }
