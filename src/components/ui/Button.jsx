@@ -20,7 +20,7 @@ export default function Button({
       type={type}
       disabled={disabled || isLoading}
       {...props}
-      className={`${VARIANT[variant]} transition-colors duration-300 px-3 py-2 md:text-sm rounded-lg flex items-center justify-center gap-3 cursor-pointer disabled:cursor-not-allowed disabled:opacity-80 ${className}`}
+      className={`${VARIANT[variant]} transition-colors duration-300 px-4 py-2 text-sm rounded-lg flex items-center justify-center gap-3 cursor-pointer disabled:cursor-not-allowed disabled:opacity-80 ${className}`}
     >
       {isLoading ? <LoaderCircle className="animate-spin size-5" /> : children}
     </button>

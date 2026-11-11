@@ -2,7 +2,15 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse } from "next/server";
 
 // declared routes
-const protectedRoutes = ["/admin/dashboard"];
+const protectedRoutes = [
+  "/admin/dashboard",
+  "/admin/about-me",
+  "/admin/projects",
+  "/admin/experience",
+  "/admin/tech-stacks",
+  "/admin/profile",
+  "/admin/change-password",
+];
 const authRoutes = ["/admin", "/forgot-password"];
 
 export async function middleware(request) {
