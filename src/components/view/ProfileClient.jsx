@@ -58,9 +58,7 @@ export default function ProfileClientView({ initialProfile }) {
   return (
     <div className="lg:relative min-h-screen md:min-h-dvh w-full flex flex-col lg:flex-row">
       <HeaderSection />
-      {/* left (sidebar)*/}
       <Sidebar />
-      {/* right */}
 
       {isEditing ? (
         <EditProfile
@@ -69,11 +67,17 @@ export default function ProfileClientView({ initialProfile }) {
           onSuccess={handleUpdateSuccess}
         />
       ) : (
-        <div className="flex flex-1 flex-col gap-6 p-5">
+        <div className="flex flex-1 flex-col gap-8 p-5">
+          <div className="flex flex-col">
+            <h1 className="text-lg font-bold">Profile.</h1>
+            <span className="text-gray-500 text-sm">
+              Manage your profile information.
+            </span>
+          </div>
           <div className=" flex flex-col md:flex-row items-center md:justify-between gap-4">
             <div className="flex flex-col md:flex-row gap-4 items-center text-center md:text-start">
               {/* image container */}
-              <div className="flex size-24 md:size-26 bg-gray-200 rounded-lg items-center justify-center text-3xl font-bold text-gray-500 overflow-hidden border border-gray-300">
+              <div className="flex size-24 md:size-26 lg:size-28 bg-gray-200 rounded-lg items-center justify-center text-3xl font-bold text-gray-500 overflow-hidden border border-gray-300 hover:border-black/90 transition-colors duration-300">
                 {profile.avatarurl ? (
                   <img
                     src={profile.avatarurl}
@@ -115,7 +119,7 @@ export default function ProfileClientView({ initialProfile }) {
                 return (
                   <div
                     key={info.data}
-                    className="flex items-center gap-4 rounded-lg border border-gray-300 px-4 py-2.5"
+                    className="flex items-center gap-4 rounded-lg border border-gray-300 hover:border-black/90 transition-colors duration-300 px-4 py-2.5"
                   >
                     {/* icon */}
                     <div className="flex items-center justify-center">
