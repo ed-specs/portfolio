@@ -28,12 +28,12 @@ export async function UpdateProfileAction(formData) {
   // then extract the formData
   const rawAge = formData.get("age");
   const rawData = {
-    firstName: formData.get("firstName"),
-    middleName: formData.get("middleName"),
-    lastName: formData.get("lastName"),
+    firstname: formData.get("firstname"),
+    middlename: formData.get("middlename"),
+    lastname: formData.get("lastname"),
     email: formData.get("email"),
     phone: formData.get("phone"),
-    birthDate: formData.get("birthDate"),
+    birthdate: formData.get("birthdate"),
     age: rawAge ? parseInt(rawAge, 10) : null,
     address: formData.get("address"),
   };
@@ -48,11 +48,11 @@ export async function UpdateProfileAction(formData) {
   // then check for existing avatar
   const { data: currentProfile } = await supabase
     .from("profile")
-    .select("avatarUrl")
+    .select("avatarurl")
     .eq("id", user.id)
     .single();
 
-  let finalAvatarUrl = currentProfile?.avatarUrl || null;
+  let finalavatarurl = currentProfile?.avatarurl || null;
   const file = formData.get("avatar");
 
   // then handle avatar upload
@@ -72,14 +72,14 @@ export async function UpdateProfileAction(formData) {
       const { publicUrl } = await uploadAvatar(file, user.id);
 
       // Clean up previous avatar if it exists
-      if (currentProfile?.avatarUrl) {
-        const oldPath = currentProfile.avatarUrl.split("/avatars/")[1];
+      if (currentProfile?.avatarurl) {
+        const oldPath = currentProfile.avatarurl.split("/avatars/")[1];
         if (oldPath) {
           await deleteAvatarByPath(decodeURIComponent(oldPath));
         }
       }
 
-      finalAvatarUrl = publicUrl;
+      finalavatarurl = publicUrl;
     } catch (uploadError) {
       return {
         success: false,
@@ -90,15 +90,15 @@ export async function UpdateProfileAction(formData) {
 
   //   then build payload to insert to database
   const dbPayload = {
-    firstName: validData.firstName,
-    middleName: validData.middleName || null,
-    lastName: validData.lastName,
+    firstname: validData.firstname,
+    middlename: validData.middlename || null,
+    lastname: validData.lastname,
     email: validData.email,
     phone: validData.phone || null,
-    birthDate: validData.birthDate || null,
+    birthdate: validData.birthdate || null,
     age: validData.age,
     address: validData.address || null,
-    avatarUrl: validData.avatarUrl,
+    avatarurl: validData.avatarurl,
   };
 
   try {

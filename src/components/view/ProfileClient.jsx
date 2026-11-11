@@ -9,13 +9,14 @@ import EditProfile from "@/components/forms/EditProfileForm";
 export default function ProfileClientView({ initialProfile }) {
   const [profile, setProfile] = useState(initialProfile);
   const [isEditing, setIsEditing] = useState(false);
+  console.log("PROFILE PASSED DOWN:", profile);
 
   const handleUpdateSuccess = (newData) => {
     setProfile(newData);
     setIsEditing(false);
   };
 
-  const fullName = `${profile.firstName} ${profile.middleName} ${profile.lastName}`;
+  const fullName = `${profile.firstname} ${profile.middlename.slice(0, 1).concat(".")} ${profile.lastname}`;
   return (
     <div className="lg:relative min-h-screen md:min-h-dvh flex flex-col lg:flex-row">
       <HeaderSection />
@@ -37,7 +38,7 @@ export default function ProfileClientView({ initialProfile }) {
             </Button>
           </div>
 
-          <p className="text-2xl font-semibold">{fullName}</p>
+          <p className="text-2xl font-semibold">{fullName.toUpperCase()}</p>
         </div>
       )}
     </div>
