@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function Input({
   children,
@@ -11,9 +12,14 @@ export default function Input({
   type = "text",
   ...props
 }) {
+  const pathname = usePathname();
+  const isAuth = pathname === "/admin";
+
+  const showForgotPassword = type === "password" && isAuth;
+
   return (
     <div className="flex flex-col gap-1.5">
-      {type == "password" ? (
+      {showForgotPassword ? (
         <div className="flex items-center justify-between">
           <label htmlFor={id} className="text-sm text-gray-500">
             {label}

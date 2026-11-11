@@ -7,7 +7,9 @@ export default function Sidebar() {
     <aside className="hidden lg:flex flex-col gap-6 max-h-dvh sticky top-0 left-0 w-64  px-5 xl:px-0 py-3 lg:py-5 border-e border-gray-300">
       {/* logo */}
       <div className="flex flex-1">
-        <h1 className="font-bold text-xl">Portfolio.</h1>
+        <Link href="/admin/dashboard" className="font-bold text-xl">
+          Portfolio.
+        </Link>
       </div>
 
       <MenuOptions />

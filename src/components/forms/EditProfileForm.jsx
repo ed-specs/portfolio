@@ -151,11 +151,11 @@ export default function EditProfile({ initialData, onCancel, onSuccess }) {
     }
   };
   return (
-    <form onSubmit={handleSubmit} className="flex flex-1 flex-col gap-6 p-5">
+    <form onSubmit={handleSubmit} className="flex flex-1 flex-col gap-8 p-5">
       {errorMsg && <ErrorBanner message={errorMsg} />}
       <div className=" flex flex-col md:flex-row items-center gap-6">
         {/* image container */}
-        <div className="flex size-24 md:size-26 bg-gray-200 rounded-lg items-center justify-center text-3xl font-bold text-gray-500 overflow-hidden border border-gray-300">
+        <div className="flex size-24 md:size-26 lg:size-28 bg-gray-200 rounded-lg items-center justify-center text-3xl font-bold text-gray-500 overflow-hidden border border-gray-300 hover:border-black/90 transition-colors duration-300">
           {previewUrl ? (
             <img
               src={previewUrl}

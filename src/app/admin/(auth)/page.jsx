@@ -14,11 +14,9 @@ export default function SignIn() {
     setServerErrorMsg("");
 
     try {
-      console.log("submitting credentials:", formData);
       const result = await SignInAction(formData);
 
       if (!result.success) {
-        console.log(result.error);
         setServerErrorMsg(
           "An unexpected connection error occured. Please try again later.",
         );
