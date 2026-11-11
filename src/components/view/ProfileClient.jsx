@@ -1,16 +1,26 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Phone, Cake, Calendar, MapPin } from "lucide-react";
 
 import HeaderSection from "@/components/ui/Header";
 import Sidebar from "@/components/ui/Sidebar";
 import Button from "@/components/ui/Button";
 import EditProfile from "@/components/forms/EditProfileForm";
+import SuccessBanner from "../ui/SuccessBanner";
 
 export default function ProfileClientView({ initialProfile }) {
   const [profile, setProfile] = useState(initialProfile);
   const [isEditing, setIsEditing] = useState(false);
-  console.log("PROFILE PASSED DOWN:", profile);
+  const [successMsg, setSuccessMsg] = useState("");
+
+  useEffect(() => {
+    if (!successMsg) return;
+
+    const timer = setTimeout(() => {
+      setSuccessMsg("");
+    }, 4000);
+    return () => clearTimeout(timer);
+  }, [successMsg]);
 
   const handleUpdateSuccess = (newData) => {
     setProfile(newData);
@@ -65,6 +75,7 @@ export default function ProfileClientView({ initialProfile }) {
           initialData={profile}
           onCancel={() => setIsEditing(false)}
           onSuccess={handleUpdateSuccess}
+          successMessage={setSuccessMsg}
         />
       ) : (
         <div className="flex flex-1 flex-col gap-8 p-5">
@@ -74,6 +85,8 @@ export default function ProfileClientView({ initialProfile }) {
               Manage your profile information.
             </span>
           </div>
+
+          {successMsg && <SuccessBanner message={successMsg} />}
           <div className=" flex flex-col md:flex-row items-center md:justify-between gap-4">
             <div className="flex flex-col md:flex-row gap-4 items-center text-center md:text-start">
               {/* image container */}

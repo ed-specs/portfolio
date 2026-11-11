@@ -5,9 +5,13 @@ import Button from "../ui/Button";
 import Input from "../ui/Input";
 import { UpdateProfileAction } from "@/app/actions/profile";
 import ErrorBanner from "../ui/ErrorBanner";
-import Image from "next/image";
 
-export default function EditProfile({ initialData, onCancel, onSuccess }) {
+export default function EditProfile({
+  initialData,
+  onCancel,
+  onSuccess,
+  successMessage,
+}) {
   const [formData, setFormData] = useState(initialData);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
@@ -15,6 +19,15 @@ export default function EditProfile({ initialData, onCancel, onSuccess }) {
   const fileInputRef = useRef(null);
   const avatarFileRef = useRef(null);
   const removeAvatarRef = useRef(false);
+
+  useEffect(() => {
+    if (!errorMsg) return;
+
+    const timer = setTimeout(() => {
+      setErrorMsg("");
+    }, 4000);
+    return () => clearTimeout(timer);
+  }, [errorMsg]);
 
   useEffect(() => {
     if (!previewUrl?.startsWith("blob:")) return;
@@ -46,7 +59,6 @@ export default function EditProfile({ initialData, onCancel, onSuccess }) {
     if (!file) return;
 
     input.value = "";
-    setErrorMsg("");
 
     if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
       setErrorMsg("Only JPG, PNG, and WebP images are allowed.");
@@ -111,13 +123,11 @@ export default function EditProfile({ initialData, onCancel, onSuccess }) {
     avatarFileRef.current = null;
     setPreviewUrl(null);
     removeAvatarRef.current = Boolean(initialData.avatarurl);
-    setErrorMsg("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    setErrorMsg("");
 
     const data = new FormData();
     data.append("firstname", formData.firstname ?? "");
@@ -143,6 +153,7 @@ export default function EditProfile({ initialData, onCancel, onSuccess }) {
       }
 
       onSuccess(result.data);
+      successMessage("Profile updated successfully.");
     } catch (error) {
       console.error("Could not save profile:", error);
       setErrorMsg("Could not save your profile. Please try again.");
