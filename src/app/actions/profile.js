@@ -19,7 +19,7 @@ export async function UpdateProfileAction(formData) {
   const {
     data: { user },
     error: authError,
-  } = await supabase.getUser();
+  } = await supabase.auth.getUser();
 
   if (authError || !user) {
     return { success: false, error: "Unauthorized access." };
@@ -46,17 +46,26 @@ export async function UpdateProfileAction(formData) {
   const validData = validation.data;
 
   // then check for existing avatar
-  const { data: currentProfile } = await supabase
+  const { data: currentProfile, error: profileError } = await supabase
     .from("profile")
     .select("avatarurl")
     .eq("id", user.id)
     .single();
 
-  let finalavatarurl = currentProfile?.avatarurl || null;
+  if (profileError) {
+    console.error("Error fetching profile before update:", profileError.message);
+    return { success: false, error: "Could not load your current profile." };
+  }
+
+  const previousAvatarUrl = currentProfile?.avatarurl || null;
+  let finalAvatarUrl = previousAvatarUrl;
   const file = formData.get("avatar");
+  const hasAvatarFile = file instanceof File && file.size > 0;
+  const removeAvatar = formData.get("removeAvatar") === "true";
+  let uploadedAvatarPath = null;
 
   // then handle avatar upload
-  if (file && file.size > 0) {
+  if (hasAvatarFile) {
     if (!ALLOWED_MIME_TYPES.includes(file.type)) {
       return {
         success: false,
@@ -69,26 +78,20 @@ export async function UpdateProfileAction(formData) {
     }
 
     try {
-      const { publicUrl } = await uploadAvatar(file, user.id);
-
-      // Clean up previous avatar if it exists
-      if (currentProfile?.avatarurl) {
-        const oldPath = currentProfile.avatarurl.split("/avatars/")[1];
-        if (oldPath) {
-          await deleteAvatarByPath(decodeURIComponent(oldPath));
-        }
-      }
-
-      finalavatarurl = publicUrl;
-    } catch (uploadError) {
+      const { publicUrl, filePath } = await uploadAvatar(user.id, file);
+      finalAvatarUrl = publicUrl;
+      uploadedAvatarPath = filePath;
+    } catch (error) {
+      console.error("Error uploading profile photo:", error);
       return {
         success: false,
         error: "Failed to upload image. Please try again.",
       };
     }
+  } else if (removeAvatar) {
+    finalAvatarUrl = null;
   }
 
-  //   then build payload to insert to database
   const dbPayload = {
     firstname: validData.firstname,
     middlename: validData.middlename || null,
@@ -98,18 +101,38 @@ export async function UpdateProfileAction(formData) {
     birthdate: validData.birthdate || null,
     age: validData.age,
     address: validData.address || null,
-    avatarurl: validData.avatarurl,
+    avatarurl: finalAvatarUrl,
   };
 
+  let updateRecord;
   try {
-    const updateRecord = await updateProfileRecord(user.id, dbPayload);
-
-    // then clear cache to render changes
-    revalidatePath("/");
-    revalidatePath("/admin/profile");
-
-    return { success: true, data: updateRecord };
+    updateRecord = await updateProfileRecord(user.id, dbPayload);
   } catch (err) {
-    return { success: false, error: err.message };
+    console.error("Error saving profile:", err);
+    if (uploadedAvatarPath) {
+      try {
+        await deleteAvatarByPath(uploadedAvatarPath);
+      } catch (cleanupError) {
+        console.error("Error cleaning up unused profile photo:", cleanupError);
+      }
+    }
+    return { success: false, error: "Could not save your profile." };
   }
+
+  const avatarChanged = finalAvatarUrl !== previousAvatarUrl;
+  if (avatarChanged && previousAvatarUrl) {
+    const previousAvatarPath = previousAvatarUrl.split("/avatars/")[1];
+    if (previousAvatarPath) {
+      try {
+        await deleteAvatarByPath(decodeURIComponent(previousAvatarPath));
+      } catch (error) {
+        console.error("Error deleting previous profile photo:", error);
+      }
+    }
+  }
+
+  revalidatePath("/");
+  revalidatePath("/admin/profile");
+
+  return { success: true, data: updateRecord };
 }

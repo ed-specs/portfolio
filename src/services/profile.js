@@ -27,9 +27,7 @@ export async function updateProfileRecord(userId, profileData) {
     .select()
     .single();
 
-  if (error) {
-    console.error("Error updating profile:", error.message);
-  }
+  if (error) throw error;
   return data;
 }
 
@@ -37,17 +35,22 @@ export async function updateProfileRecord(userId, profileData) {
 export async function uploadAvatar(userId, file) {
   const supabase = await createServerClient();
   const uniqueName = crypto.randomUUID();
-  const fileExt = file.name.split(".").pop();
+  const fileExt =
+    file.type === "image/png"
+      ? "png"
+      : file.type === "image/webp"
+        ? "webp"
+        : "jpg";
   const filePath = `${userId}/avatar-${uniqueName}.${fileExt}`;
 
-  const { error } = await supabase.from("avatars").upload(filePath, file, {
-    upsert: true,
-    contentType: file.type,
-  });
+  const { error } = await supabase.storage
+    .from("avatars")
+    .upload(filePath, file, {
+      upsert: true,
+      contentType: file.type,
+    });
 
-  if (error) {
-    console.error("Error uploading avatar:", error.message);
-  }
+  if (error) throw error;
 
   const { data: urlData } = supabase.storage
     .from("avatars")
@@ -60,5 +63,6 @@ export async function uploadAvatar(userId, file) {
 export async function deleteAvatarByPath(filePath) {
   if (!filePath) return;
   const supabase = await createServerClient();
-  await supabase.storage.from("avatars").remove([filePath]);
+  const { error } = await supabase.storage.from("avatars").remove([filePath]);
+  if (error) throw error;
 }

@@ -73,9 +73,19 @@ export default function ProfileClientView({ initialProfile }) {
           <div className=" flex flex-col md:flex-row items-center md:justify-between gap-4">
             <div className="flex flex-col md:flex-row gap-4 items-center text-center md:text-start">
               {/* image container */}
-              <div className="flex size-24 md:size-26 bg-gray-200 rounded-lg items-center justify-center text-3xl font-bold text-gray-500">
-                {profile.firstname.slice(0, 1).toUpperCase()}
-                {profile.lastname.slice(0, 1).toUpperCase()}
+              <div className="flex size-24 md:size-26 bg-gray-200 rounded-lg items-center justify-center text-3xl font-bold text-gray-500 overflow-hidden border border-gray-300">
+                {profile.avatarurl ? (
+                  <img
+                    src={profile.avatarurl}
+                    alt={`${profile.firstname} ${profile.lastname}`}
+                    className="size-full object-cover"
+                  />
+                ) : (
+                  <>
+                    {profile.firstname.slice(0, 1).toUpperCase()}
+                    {profile.lastname.slice(0, 1).toUpperCase()}
+                  </>
+                )}
               </div>
 
               {/* name and & email */}
