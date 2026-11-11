@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { connection } from "next/server";
 import { getProfileRecord } from "@/services/profile";
 import ProfileClientView from "@/components/view/ProfileClient";
+import Loading from "@/components/ui/Loading";
 
 async function ProfileContent() {
   await connection();
@@ -13,7 +14,7 @@ async function ProfileContent() {
 export default async function Profile() {
   return (
     <div className="lg:relative min-h-screen md:min-h-dvh flex flex-col lg:flex-row">
-      <Suspense fallback={<p>Loading profile...</p>}>
+      <Suspense fallback={<Loading />}>
         <ProfileContent />
       </Suspense>
     </div>
