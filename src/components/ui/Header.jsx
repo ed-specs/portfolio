@@ -10,7 +10,7 @@ export default function HeaderSection() {
   const [toggleSidebar, setToggleSidebar] = useState(false);
 
   return (
-    <header className="lg:hidden sticky top-0 left-0 flex items-center justify-between px-5 py-2 md:py-3 border-b border-gray-300">
+    <header className="lg:hidden sticky top-0 left-0 flex items-center justify-between px-5 py-2 md:py-3 border-b border-gray-300 bg-white">
       {/* logo */}
       <div className="flex flex-1">
         <h1 className="font-bold text-lg md:text-xl">Portfolio.</h1>
