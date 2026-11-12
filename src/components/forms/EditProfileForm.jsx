@@ -162,7 +162,7 @@ export default function EditProfile({
     }
   };
   return (
-    <form onSubmit={handleSubmit} className="flex flex-1 flex-col gap-8 p-5">
+    <form onSubmit={handleSubmit} className="flex flex-1 flex-col gap-6 p-5">
       {errorMsg && <ErrorBanner message={errorMsg} />}
       <div className=" flex flex-col md:flex-row items-center gap-6">
         {/* image container */}
@@ -305,7 +305,7 @@ export default function EditProfile({
         />
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center justify-end gap-2">
         <Button disabled={isLoading} type="submit" variant="primary">
           Save Changes
         </Button>
