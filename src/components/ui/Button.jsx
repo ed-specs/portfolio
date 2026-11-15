@@ -4,6 +4,7 @@ const VARIANT = {
   primary:
     "bg-black/90 hover:bg-black/85 text-white border border-black/90 hover:border-black/85",
   secondary: "bg-white border border-gray-300 hover:bg-gray-100",
+  critical: "bg-red-500 text-white border border-red-300 hover:bg-red-600",
 };
 
 export default function Button({

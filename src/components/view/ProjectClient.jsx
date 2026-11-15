@@ -7,10 +7,12 @@ import Sidebar from "@/components/ui/Sidebar";
 import Button from "@/components/ui/Button";
 import SuccessBanner from "../ui/SuccessBanner";
 import AddProjectsForm from "../forms/AddProjectsForm";
+import ProjectDetailsClient from "./ProjectDetailsClient";
 
 export default function ProjectsClientView({ initialProjects }) {
   const [projects, setProjects] = useState(initialProjects);
   const [showAddProject, setShowAddProject] = useState(false);
+  const [selectProject, setSelectProject] = useState(null);
   const [successMsg, setSuccessMsg] = useState("");
 
   useEffect(() => {
@@ -27,6 +29,20 @@ export default function ProjectsClientView({ initialProjects }) {
     setShowAddProject(false);
   };
 
+  const handleEditSuccess = (updatedProject) => {
+    setProjects((prev) =>
+      prev.map((item) =>
+        item.id === updatedProject.id ? updatedProject : item,
+      ),
+    );
+    setSelectProject(null);
+  };
+
+  const handleDeleteSuccess = (deletedProject) => {
+    setProjects((prev) => prev.map((item) => item.id !== deletedProject));
+    setSelectProject(null);
+  };
+
   return (
     <div className="lg:relative min-h-screen md:min-h-dvh w-full flex flex-col lg:flex-row">
       <HeaderSection />
@@ -39,6 +55,14 @@ export default function ProjectsClientView({ initialProjects }) {
             onSuccess={handleUpdateSuccess}
             successMessage={setSuccessMsg}
           />
+        ) : selectProject ? (
+          <ProjectDetailsClient
+            project={selectProject}
+            onBack={() => setSelectProject(null)}
+            onEditSuccess={handleEditSuccess}
+            onDeleteSuccess={handleDeleteSuccess}
+            deleteSuccessMessage={setSuccessMsg}
+          />
         ) : (
           <>
             <div className="flex flex-col">
@@ -50,19 +74,9 @@ export default function ProjectsClientView({ initialProjects }) {
 
             {successMsg && <SuccessBanner message={successMsg} />}
 
-            {/* <div className="flex items-center">
-              <Button
-                type="button"
-                variant="primary"
-                onClick={() => setShowAddProject(true)}
-              >
-                Add Projects
-              </Button>
-            </div> */}
-
             {projects.length === 0 ? (
-              <div className="rounded-lg border border-gray-300 bg-gray-50 flex flex-col items-center justify-center gap-6 py-12">
-                <div className="flex flex-col items-center justify-center gap-2">
+              <div className="rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 flex flex-col items-center justify-center gap-6 py-12">
+                <div className="flex flex-col items-center justify-center gap-1">
                   <h1 className="text-lg font-bold">No Projects Available.</h1>
 
                   <span className="text-gray-500 text-sm text-center">
@@ -98,7 +112,8 @@ export default function ProjectsClientView({ initialProjects }) {
                     {projects.map((p) => (
                       <div
                         key={p.id}
-                        className="col-span-2 md:col-span-1 rounded-lg border border-gray-300  flex flex-col  hover:border-black/90 transition-colors duration-300"
+                        onClick={() => setSelectProject(p)}
+                        className="col-span-2 md:col-span-1 rounded-lg border border-gray-300  flex flex-col  hover:border-black/90 transition-colors duration-300 cursor-pointer"
                       >
                         <div className="flex gap-4 p-5">
                           {/* icon */}
@@ -144,7 +159,7 @@ export default function ProjectsClientView({ initialProjects }) {
                           <Link
                             href={p.link}
                             target="_blank"
-                            className="text-sm "
+                            className="text-sm text-gray-500 hover:text-black/90 transition-colors duration-300"
                           >
                             Go to {p.title}
                           </Link>

@@ -49,21 +49,46 @@ export default function AboutMeClient({ initialAbout }) {
 
           {successMsg && <SuccessBanner message={successMsg} />}
 
-          <div className="flex flex-col gap-4">
-            <div className="p-5 rounded-lg border border-gray-300 hover:border-black/90 transition-colors duration-300">
-              <p className="text-sm">{about}</p>
-            </div>
+          {about.length === 0 ? (
+            <div className="rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 flex flex-col items-center justify-center gap-6 py-12">
+              <div className="flex flex-col items-center justify-center gap-1">
+                <h1 className="text-lg font-bold">No About Me.</h1>
 
-            <div className="flex justify-end">
-              <Button
-                type="button"
-                variant="primary"
-                onClick={() => setIsEditing((prev) => !prev)}
-              >
-                Edit Content
-              </Button>
+                <span className="text-gray-500 text-sm text-center">
+                  There are no current about me content.
+                </span>
+              </div>
+              <div className="flex items-center justify-center">
+                <div className="flex items-center">
+                  <Button
+                    type="button"
+                    variant="primary"
+                    onClick={() => setIsEditing((prev) => !prev)}
+                  >
+                    Add About Me
+                  </Button>
+                </div>
+              </div>
             </div>
-          </div>
+          ) : (
+            <>
+              <div className="flex">
+                <Button
+                  type="button"
+                  variant="primary"
+                  onClick={() => setIsEditing((prev) => !prev)}
+                >
+                  Edit Content
+                </Button>
+              </div>
+
+              <div className="flex flex-col gap-4">
+                <div className="p-5 rounded-lg border border-gray-300 hover:border-black/90 transition-colors duration-300">
+                  <p className="text-sm">{about}</p>
+                </div>
+              </div>
+            </>
+          )}
         </div>
       )}
     </div>
