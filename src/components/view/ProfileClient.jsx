@@ -69,7 +69,6 @@ export default function ProfileClientView({ initialProfile }) {
     <div className="lg:relative min-h-screen md:min-h-dvh w-full flex flex-col lg:flex-row">
       <HeaderSection />
       <Sidebar />
-
       {isEditing ? (
         <EditProfile
           initialData={profile}

@@ -60,7 +60,7 @@ export async function middleware(request) {
 
   // Case 1: Unauthenticated user visits protected page -> redirect to login
   if (isProtected && !user) {
-    url.pathname = "/";
+    url.pathname = "/admin";
     const redirectResponse = NextResponse.redirect(url);
     response.cookies.getAll().forEach((cookie) => {
       redirectResponse.cookies.set(cookie.name, cookie.value, cookie);
@@ -76,6 +76,16 @@ export async function middleware(request) {
       redirectResponse.cookies.set(cookie.name, cookie.value, cookie);
     });
     return redirectResponse;
+  }
+
+  // Cas 3: Logged out user tries to back/forward to protected routes
+  if (isProtected) {
+    response.headers.set(
+      "Cache-Control",
+      "no-store, no-cache, must-revalidate, proxy-revalidate",
+    );
+    response.headers.set("Pragma", "no-cache");
+    response.headers.set("Expires", "0");
   }
 
   return response;
