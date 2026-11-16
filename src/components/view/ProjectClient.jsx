@@ -38,8 +38,8 @@ export default function ProjectsClientView({ initialProjects }) {
     setSelectProject(null);
   };
 
-  const handleDeleteSuccess = (deletedProject) => {
-    setProjects((prev) => prev.map((item) => item.id !== deletedProject));
+  const handleDeleteSuccess = (deletedProjectId) => {
+    setProjects((prev) => prev.filter((item) => item.id !== deletedProjectId));
     setSelectProject(null);
   };
 
