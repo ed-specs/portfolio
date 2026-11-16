@@ -2,12 +2,28 @@
 
 import { useState } from "react";
 import MenuOptions from "@/lib/menu";
+import { SignOutAction } from "@/app/actions/auth";
 
 import Link from "next/link";
 import { X, DoorOpen, Menu } from "lucide-react";
 
 export default function HeaderSection() {
   const [toggleSidebar, setToggleSidebar] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSignOut = async () => {
+    setIsLoading(true);
+    const result = await SignOutAction();
+
+    if (!result.success) {
+      alert(result.error);
+      setIsLoading(false);
+      return;
+    }
+
+    // Replaces current history entry and forces a clean reload
+    window.location.replace("/admin");
+  };
 
   return (
     <header className="lg:hidden sticky top-0 left-0 flex items-center justify-between px-5 py-2 md:py-3 border-b border-gray-300 bg-white">
@@ -54,13 +70,15 @@ export default function HeaderSection() {
             <MenuOptions />
 
             {/* sign out */}
-            <Link
-              href="/admin"
-              className="text-red-500 py-2 hover:px-2 cursor-pointer transition-all duration-300  flex items-center gap-4"
+            <button
+              type="button"
+              onClick={handleSignOut}
+              disabled={isLoading}
+              className="text-red-500 py-2 hover:px-2 cursor-pointer transition-all duration-300  flex items-center gap-4 disabled:bg-opacity/60 disabled:cursor-not-allowed"
             >
               <DoorOpen className="size-5" />
               Sign out
-            </Link>
+            </button>
           </div>
         </div>
       </div>

@@ -164,6 +164,7 @@ export default function EditProfile({
   return (
     <form onSubmit={handleSubmit} className="flex flex-1 flex-col gap-6 p-5">
       {errorMsg && <ErrorBanner message={errorMsg} />}
+
       <div className=" flex flex-col md:flex-row items-center gap-6">
         {/* image container */}
         <div className="flex size-24 md:size-26 lg:size-28 bg-gray-200 rounded-lg items-center justify-center text-3xl font-bold text-gray-500 overflow-hidden border border-gray-300 hover:border-black/90 transition-colors duration-300">
@@ -306,9 +307,6 @@ export default function EditProfile({
       </div>
 
       <div className="flex items-center justify-end gap-2">
-        <Button disabled={isLoading} type="submit" variant="primary">
-          Save Changes
-        </Button>
         <Button
           disabled={isLoading}
           type="button"
@@ -316,6 +314,9 @@ export default function EditProfile({
           onClick={onCancel}
         >
           Discard
+        </Button>
+        <Button disabled={isLoading} type="submit" variant="primary">
+          Save Changes
         </Button>
       </div>
     </form>
