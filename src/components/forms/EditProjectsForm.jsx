@@ -90,7 +90,6 @@ export default function EditProjectsForm({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
 
     let finalTechstack = [...techstack];
     if (techInput.trim()) {
@@ -105,6 +104,8 @@ export default function EditProjectsForm({
       setErrorMsg("Title, Description, and Tech Stack are required.");
       return;
     }
+
+    setIsLoading(true);
 
     try {
       const data = new FormData();
@@ -195,7 +196,7 @@ export default function EditProjectsForm({
               maxLength="3000"
               placeholder="Enter your project description"
               value={formData.description}
-              className="border border-gray-300 w-full rounded-lg px-3 py-2 md:text-sm focus:outline-none focus:border-black/90 transition-colors duration-300 disabled:cursor-not-allowed disabled:opacity-80 readonly:disabled:opacity-80"
+              className="border border-gray-300 w-full rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-black/90 transition-colors duration-300 disabled:cursor-not-allowed disabled:opacity-80 readonly:disabled:opacity-80"
               onChange={(e) =>
                 setFormData((prev) => ({
                   ...prev,
@@ -239,7 +240,7 @@ export default function EditProjectsForm({
                 onKeyDown={handleTechKeyDown}
                 disabled={isLoading}
                 placeholder="Enter tech stack used for your project"
-                className="border w-full border-gray-300 rounded-lg px-3 py-2 md:text-sm focus:outline-none focus:border-black/90 transition-colors duration-300 disabled:cursor-not-allowed disabled:opacity-80 readonly:disabled:opacity-80"
+                className="border w-full border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-black/90 transition-colors duration-300 disabled:cursor-not-allowed disabled:opacity-80 readonly:disabled:opacity-80"
               />
               <Button
                 type="button"

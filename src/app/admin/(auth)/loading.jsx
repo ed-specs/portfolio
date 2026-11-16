@@ -5,7 +5,7 @@ export default function Loading() {
     <div className="flex flex-col text-center gap-4">
       {/* logo */}
       <div className="flex flex-1">
-        <h1 className="font-bold text-lg md:text-xl">Portfolio.</h1>
+        <h1 className="font-bold text-base md:text-lg">Portfolio.</h1>
       </div>
 
       <span className="text-gray-500">

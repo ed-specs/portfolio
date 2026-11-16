@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import Button from "../ui/Button";
+import ErrorBanner from "../ui/ErrorBanner";
 import SuccessBanner from "../ui/SuccessBanner";
 import EditProjectsForm from "../forms/EditProjectsForm";
 import { deleteProjectAction } from "@/app/actions/projects";
@@ -20,13 +21,15 @@ export default function ProjectDetailsClient({
   const [successMsg, setSuccessMsg] = useState("");
 
   useEffect(() => {
-    if (!successMsg) return;
+    if (!errorMsg) return;
 
     const timer = setTimeout(() => {
+      setErrorMsg("");
       setSuccessMsg("");
     }, 4000);
+
     return () => clearTimeout(timer);
-  }, [successMsg]);
+  }, [errorMsg, successMsg]);
 
   const handleDelete = async () => {
     const confirmed = window.confirm(
@@ -79,6 +82,7 @@ export default function ProjectDetailsClient({
             </button>
           </div>
           {successMsg && <SuccessBanner message={successMsg} />}
+          {errorMsg && <ErrorBanner message={errorMsg} />}
           <div className="flex flex-col gap-4">
             <div className="flex flex-col sm:flex-row gap-4">
               <div className="flex flex-1 gap-6 items-center ">
@@ -99,8 +103,10 @@ export default function ProjectDetailsClient({
                   </div>
                 </div>
                 {/* title and link */}
-                <div className="flexflex-1 flex-col gap-">
-                  <h1 className="text-lg font-bold">{project.title}</h1>
+                <div className="flexflex-1 flex-col">
+                  <h1 className="text-lg md:text-xl font-bold">
+                    {project.title}
+                  </h1>
                   {project.link && (
                     <Link
                       href={project.link}
@@ -127,9 +133,12 @@ export default function ProjectDetailsClient({
 
             <div className="flex flex-col gap-1.5">
               <span className="text-sm text-gray-500">Project Description</span>
-              <div className="rounded-lg border border-gray-300 p-5">
-                <p className="text-sm">{project.description}</p>
-              </div>
+              <textarea
+                rows="10"
+                value={project.description}
+                disabled
+                className="rounded-lg border border-gray-300 p-5"
+              ></textarea>
             </div>
 
             <div className="flex flex-col gap-2">

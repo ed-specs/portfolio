@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { ChevronRight } from "lucide-react";
 
 import HeaderSection from "@/components/ui/Header";
 import Sidebar from "@/components/ui/Sidebar";
@@ -44,7 +45,7 @@ export default function ProjectsClientView({ initialProjects }) {
   };
 
   return (
-    <div className="lg:relative min-h-screen md:min-h-dvh w-full flex flex-col lg:flex-row">
+    <div className="lg:relative min-h-svh md:min-h-screen w-full flex flex-col lg:flex-row">
       <HeaderSection />
       <Sidebar />
 
@@ -66,21 +67,23 @@ export default function ProjectsClientView({ initialProjects }) {
         ) : (
           <>
             <div className="flex flex-col">
-              <h1 className="text-lg font-bold">Projects.</h1>
+              <h1 className="text-lg md:text-xl font-bold">Projects</h1>
               <span className="text-gray-500 text-sm">
-                Manage your projects information.
+                Manage your projects information
               </span>
             </div>
 
             {successMsg && <SuccessBanner message={successMsg} />}
 
             {projects.length === 0 ? (
-              <div className="rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 flex flex-col items-center justify-center gap-6 py-12">
+              <div className="rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 flex flex-col items-center justify-center gap-6 py-12 px-6">
                 <div className="flex flex-col items-center justify-center gap-1">
-                  <h1 className="text-lg font-bold">No Projects Available.</h1>
+                  <h1 className="text-lg md:text-xl font-bold">
+                    No Projects Available
+                  </h1>
 
                   <span className="text-gray-500 text-sm text-center">
-                    There are no current available projects.
+                    There are no current available projects
                   </span>
                 </div>
                 <div className="flex items-center justify-center">
@@ -136,10 +139,12 @@ export default function ProjectsClientView({ initialProjects }) {
 
                           <div className="flex flex-col flex-1 gap-2">
                             <div className="flex">
-                              <h1 className="text-lg font-bold">{p.title}</h1>
+                              <h1 className="text-lg md:text-xl font-bold">
+                                {p.title}
+                              </h1>
                             </div>
                             <div className="flex ">
-                              <p className="text-gray-500 text-xs md:text-sm line-clamp-3 ">
+                              <p className="text-gray-500 text-sm line-clamp-3 ">
                                 {p.description}
                               </p>
                             </div>
@@ -159,9 +164,10 @@ export default function ProjectsClientView({ initialProjects }) {
                           <Link
                             href={p.link}
                             target="_blank"
-                            className="text-sm text-gray-500 hover:text-black/90 transition-colors duration-300"
+                            className="text-xs text-gray-500 hover:text-black/90 transition-colors duration-300 flex items-center gap-2"
                           >
-                            Go to {p.title}
+                            Visit Site
+                            <ChevronRight className="size-4" />
                           </Link>
                         </div>
                       </div>

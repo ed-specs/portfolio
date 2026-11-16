@@ -54,8 +54,8 @@ export default function AboutMeForm({
   return (
     <form onSubmit={handleSubmit} className="flex flex-1 flex-col gap-6 p-5">
       <div className="flex flex-col">
-        <h1 className="text-lg font-bold">Edit About Me.</h1>
-        <span className="text-gray-500 text-sm">Edit about me content.</span>
+        <h1 className="text-lg md:text-xl font-bold">Edit About Me</h1>
+        <span className="text-gray-500 text-sm">Edit about me content</span>
       </div>
       {errorMsg && <ErrorBanner message={errorMsg} />}
       <div className="flex flex-col gap-4">
@@ -72,13 +72,13 @@ export default function AboutMeForm({
               maxLength="3000"
               value={content}
               placeholder="I am Edward Gatbonton and I..."
-              className="border border-gray-300 w-full rounded-lg px-3 py-2 md:text-sm focus:outline-none focus:border-black/90 transition-colors duration-300 disabled:cursor-not-allowed disabled:opacity-80 readonly:disabled:opacity-80"
+              className="border border-gray-300 w-full rounded-lg p-5 text-sm focus:outline-none focus:border-black/90 transition-colors duration-300 disabled:cursor-not-allowed disabled:opacity-80 readonly:disabled:opacity-80"
               onChange={(e) => setContent(e.target.value)}
               disabled={isLoading}
             />
 
             <span
-              className={`${content.length > 3000 ? "text-red-500" : "text-gray-500 text-xs"} transition-colors duration-300`}
+              className={`${content.length > 3000 ? "text-red-500" : "text-gray-500"} text-xs transition-colors duration-300`}
             >
               {content.length} / 3000 characters
             </span>
