@@ -1,7 +1,7 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient as createServerClient } from "@/lib/supabase/server";
 
 export async function getExperienceRecord() {
-  const supabase = await createClient();
+  const supabase = await createServerClient();
 
   const { data, error } = await supabase
     .from("experiences")
@@ -18,7 +18,7 @@ export async function getExperienceRecord() {
 }
 
 export async function insertExperienceRecord(experienceData) {
-  const supabase = await createClient();
+  const supabase = await createServerClient();
 
   const { data, error } = await supabase
     .from("experiences")
@@ -34,7 +34,7 @@ export async function updateExperienceRecord(
   experienceId,
   experienceData,
 ) {
-  const supabase = await createClient();
+  const supabase = await createServerClient();
 
   const { data, error } = await supabase
     .from("experiences")
