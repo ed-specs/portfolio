@@ -105,7 +105,7 @@ export default function EditExperienceForm({
                 id="startDate"
                 label="Start Date"
                 type="date"
-                value={formData.startDate}
+                value={formData.start_date}
                 onChange={(e) =>
                   setFormData((prev) => ({
                     ...prev,
@@ -124,7 +124,7 @@ export default function EditExperienceForm({
                 id="endDate"
                 label="End Date"
                 type="date"
-                value={formData.endDate}
+                value={formData.end_date}
                 onChange={(e) =>
                   setFormData((prev) => ({ ...prev, endDate: e.target.value }))
                 }

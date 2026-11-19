@@ -45,20 +45,19 @@ export default function ExperienceClientView({ initialExperience }) {
     setSelectedExperience(null);
   };
 
-
-  const formatDateRange = (experience.start_date, experience.end_date, experience.is_current) => {
+  const formatDateRange = (startDate, endDate, isCurrent) => {
     const options = { month: "short", year: "numeric" };
-    const start = new Date(experience.start_date).toLocaleDateString("en-US", options);
+    const start = new Date(startDate).toLocaleDateString("en-US", options);
 
     if (isCurrent) {
       return <span>{start} – Present</span>;
     }
 
-    if (!experience.end_date) {
+    if (!endDate) {
       return <span>{start}</span>;
     }
 
-    const end = new Date(experience.end_date).toLocaleDateString("en-US", options);
+    const end = new Date(endDate).toLocaleDateString("en-US", options);
 
     return (
       <>
@@ -143,7 +142,7 @@ export default function ExperienceClientView({ initialExperience }) {
                     <div
                       key={exp.id}
                       onClick={() => setSelectedExperience(exp)}
-                      className="flex flex-col gap-4 flex-1  p-5 rounded-lg border border-gray-300 hover:border-black/90 transition-colors duration-300"
+                      className="flex flex-col gap-4 flex-1  p-5 rounded-lg border border-gray-300 hover:border-black/90 transition-colors duration-300 cursor-pointer"
                     >
                       <div className="flex flex-col">
                         <h1 className="text-lg md:text-xl font-bold">
@@ -156,9 +155,9 @@ export default function ExperienceClientView({ initialExperience }) {
 
                       <div className="flex items-center gap-2">
                         {formatDateRange(
-                          experience.startDate,
-                          experience.endDate,
-                          experience.isCurrent,
+                          exp.start_date,
+                          exp.end_date,
+                          exp.is_current,
                         )}
                       </div>
 

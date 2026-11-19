@@ -6,7 +6,7 @@ import Button from "../ui/Button";
 import ErrorBanner from "../ui/ErrorBanner";
 import SuccessBanner from "../ui/SuccessBanner";
 import { deleteExperienceAction } from "@/app/actions/experience";
-import { Minus } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import EditExperienceForm from "../forms/EditExperience";
 
 export default function ExperienceDetailsClient({
@@ -115,7 +115,7 @@ export default function ExperienceDetailsClient({
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-4 flex-1  p-5 rounded-lg border border-gray-300 hover:border-black/90 transition-colors duration-300">
               <div className="flex flex-col sm:flex-row gap-4">
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-4 md:flex-1">
                   <div className="flex flex-col">
                     <h1 className="text-lg md:text-xl font-bold">
                       {experience.role}
@@ -127,9 +127,9 @@ export default function ExperienceDetailsClient({
 
                   <div className="flex items-center gap-2">
                     {formatDateRange(
-                      experience.startDate,
-                      experience.endDate,
-                      experience.isCurrent,
+                      experience.start_date,
+                      experience.end_date,
+                      experience.is_current,
                     )}
                   </div>
                 </div>
@@ -146,8 +146,8 @@ export default function ExperienceDetailsClient({
                 </div>
               </div>
 
-              <div className="rounded-lg border border-gray-300 p-5">
-                <p className="text-gray-500 text-sm line-clamp-3">
+              <div className="rounded-lg border border-gray-300 px-4 py-4 mt-2">
+                <p className="text-gray-500 text-sm">
                   {experience.description}
                 </p>
               </div>
