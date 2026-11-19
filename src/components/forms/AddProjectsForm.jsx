@@ -122,7 +122,6 @@ export default function AddProjectsForm({
       }
 
       onSuccess(result.data);
-      console.log(result.data);
       successMessage("Project added successfully.");
     } catch (error) {
       setErrorMsg("Something went wrong while saving your project.");
@@ -134,12 +133,12 @@ export default function AddProjectsForm({
   return (
     <form onSubmit={handleSubmit} className="flex flex-1 flex-col gap-6">
       <div className="flex flex-col">
-        <h1 className="text-lg font-bold">Add Projects.</h1>
-        <span className="text-gray-500 text-sm">Add new projects.</span>
+        <h1 className="text-lg md:text-xl font-bold">Add Projects</h1>
+        <span className="text-gray-500 text-sm">Add new projects</span>
       </div>
 
       {errorMsg && <ErrorBanner message={errorMsg} />}
-      <div className="flex flex-col gap-3.5">
+      <div className="flex flex-col gap-4">
         {/* Image Container & Upload Input (Matching your EditProfile style) */}
         <div className="flex items-center gap-4">
           <div className="flex size-14 md:size-16 lg:size-18 bg-transparent rounded-lg items-center justify-center text-3xl font-bold text-gray-500 overflow-hidden border border-gray-300 hover:border-black/90 transition-colors duration-300 shrink-0">
@@ -191,13 +190,13 @@ export default function AddProjectsForm({
               maxLength="3000"
               placeholder="Enter your project description"
               value={description}
-              className="border border-gray-300 w-full rounded-lg px-3 py-2 md:text-sm focus:outline-none focus:border-black/90 transition-colors duration-300 disabled:cursor-not-allowed disabled:opacity-80 readonly:disabled:opacity-80"
+              className="border border-gray-300 w-full rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-black/90 transition-colors duration-300 disabled:cursor-not-allowed disabled:opacity-80 readonly:disabled:opacity-80"
               onChange={(e) => setDescription(e.target.value)}
               disabled={isLoading}
               required
             ></textarea>
             <span
-              className={`${description.length > 3000 ? "text-red-500" : "text-gray-500 text-xs"} transition-colors duration-300`}
+              className={`${description.length > 3000 ? "text-red-500" : "text-gray-500 "} text-xs transition-colors duration-300`}
             >
               {description.length} / 3000 characters
             </span>
@@ -227,8 +226,8 @@ export default function AddProjectsForm({
                 onChange={(e) => setTechInput(e.target.value)}
                 onKeyDown={handleTechKeyDown}
                 disabled={isLoading}
-                placeholder="Enter tech stack used for your project"
-                className="border w-full border-gray-300 rounded-lg px-3 py-2 md:text-sm focus:outline-none focus:border-black/90 transition-colors duration-300 disabled:cursor-not-allowed disabled:opacity-80 readonly:disabled:opacity-80"
+                placeholder="e.g Next.js"
+                className="border w-full border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-black/90 transition-colors duration-300 disabled:cursor-not-allowed disabled:opacity-80 readonly:disabled:opacity-80"
               />
               <Button
                 type="button"

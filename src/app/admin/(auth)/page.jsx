@@ -39,9 +39,10 @@ export default function SignIn() {
 
     try {
       const result = await SignInAction(formData);
+      console.log(result);
 
       if (!result.success) {
-        setErrorMsg("Sign in failed. Please try again.");
+        setErrorMsg("Invalid email or password.");
         return;
       }
 
@@ -62,11 +63,11 @@ export default function SignIn() {
         {/* logo */}
         <div className="flex flex-col text-center">
           {/* <span className=" text-gray-500">Welcome back,</span> */}
-          <h1 className="text-2xl font-bold tracking-tight">
+          <h1 className="text-lg md:text-xl font-bold tracking-tight">
             Edward's Portfolio
           </h1>
           <span className="text-gray-500 text-sm text-center">
-            Sign in to your account.
+            Sign in to your account
           </span>
         </div>
 

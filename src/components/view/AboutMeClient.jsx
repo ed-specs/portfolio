@@ -28,7 +28,7 @@ export default function AboutMeClient({ initialAbout }) {
     setIsEditing(false);
   };
   return (
-    <div className="lg:relative min-h-screen md:min-h-dvh flex flex-col lg:flex-row">
+    <div className="lg:relative min-h-svh md:min-h-screen flex flex-col lg:flex-row">
       <HeaderSection />
       <Sidebar />
       {isEditing ? (
@@ -41,21 +41,21 @@ export default function AboutMeClient({ initialAbout }) {
       ) : (
         <div className="flex flex-1 flex-col gap-6 p-5">
           <div className="flex flex-col">
-            <h1 className="text-lg font-bold">About Me.</h1>
+            <h1 className="text-lg md:text-xl font-bold">About Me</h1>
             <span className="text-gray-500 text-sm">
-              Manage your about me information.
+              Manage your about me information
             </span>
           </div>
 
           {successMsg && <SuccessBanner message={successMsg} />}
 
           {about.length === 0 ? (
-            <div className="rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 flex flex-col items-center justify-center gap-6 py-12">
+            <div className="rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 flex flex-col items-center justify-center gap-6 py-12 px-6">
               <div className="flex flex-col items-center justify-center gap-1">
-                <h1 className="text-lg font-bold">No About Me.</h1>
+                <h1 className="text-lg md:text-xl font-bold">No About Me</h1>
 
                 <span className="text-gray-500 text-sm text-center">
-                  There are no current about me content.
+                  There are no current about me content
                 </span>
               </div>
               <div className="flex items-center justify-center">
@@ -82,10 +82,14 @@ export default function AboutMeClient({ initialAbout }) {
                 </Button>
               </div>
 
-              <div className="flex flex-col gap-4">
-                <div className="p-5 rounded-lg border border-gray-300 hover:border-black/90 transition-colors duration-300">
-                  <p className="text-sm">{about}</p>
-                </div>
+              <div className="flex flex-col gap-1.5">
+                <span className="text-gray-500 text-sm">About Me</span>
+                <textarea
+                  value={about}
+                  rows="10"
+                  disabled
+                  className="p-5 text-sm rounded-lg border border-gray-300 hover:border-black/90 transition-colors duration-300"
+                ></textarea>
               </div>
             </>
           )}

@@ -90,7 +90,6 @@ export default function EditProjectsForm({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
 
     let finalTechstack = [...techstack];
     if (techInput.trim()) {
@@ -105,6 +104,8 @@ export default function EditProjectsForm({
       setErrorMsg("Title, Description, and Tech Stack are required.");
       return;
     }
+
+    setIsLoading(true);
 
     try {
       const data = new FormData();
@@ -144,7 +145,7 @@ export default function EditProjectsForm({
       <div className="flex flex-col gap-3.5">
         {/* Image Container & Upload Input (Matching your EditProfile style) */}
         <div className="flex items-center gap-4">
-          <div className="flex size-14 md:size-16 lg:size-18 bg-transparent rounded-lg items-center justify-center text-3xl font-bold text-gray-500 overflow-hidden border border-gray-300 hover:border-black/90 transition-colors duration-300 shrink-0">
+          <div className="flex size-12 md:size-14 bg-transparent rounded-lg items-center justify-center text-3xl font-bold text-gray-500 overflow-hidden border border-gray-300 hover:border-black/90 transition-colors duration-300 shrink-0">
             {previewUrl ? (
               <img
                 src={previewUrl}
@@ -195,7 +196,7 @@ export default function EditProjectsForm({
               maxLength="3000"
               placeholder="Enter your project description"
               value={formData.description}
-              className="border border-gray-300 w-full rounded-lg px-3 py-2 md:text-sm focus:outline-none focus:border-black/90 transition-colors duration-300 disabled:cursor-not-allowed disabled:opacity-80 readonly:disabled:opacity-80"
+              className="border border-gray-300 w-full rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-black/90 transition-colors duration-300 disabled:cursor-not-allowed disabled:opacity-80 readonly:disabled:opacity-80"
               onChange={(e) =>
                 setFormData((prev) => ({
                   ...prev,
@@ -239,7 +240,7 @@ export default function EditProjectsForm({
                 onKeyDown={handleTechKeyDown}
                 disabled={isLoading}
                 placeholder="Enter tech stack used for your project"
-                className="border w-full border-gray-300 rounded-lg px-3 py-2 md:text-sm focus:outline-none focus:border-black/90 transition-colors duration-300 disabled:cursor-not-allowed disabled:opacity-80 readonly:disabled:opacity-80"
+                className="border w-full border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-black/90 transition-colors duration-300 disabled:cursor-not-allowed disabled:opacity-80 readonly:disabled:opacity-80"
               />
               <Button
                 type="button"
