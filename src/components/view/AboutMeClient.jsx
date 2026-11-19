@@ -88,7 +88,7 @@ export default function AboutMeClient({ initialAbout }) {
                   value={about}
                   rows="10"
                   disabled
-                  className="p-5 rounded-lg border border-gray-300 hover:border-black/90 transition-colors duration-300"
+                  className="p-5 text-sm rounded-lg border border-gray-300 hover:border-black/90 transition-colors duration-300"
                 ></textarea>
               </div>
             </>

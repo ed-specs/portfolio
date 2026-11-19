@@ -161,9 +161,7 @@ export default function ExperienceClientView({ initialExperience }) {
                         )}
                       </div>
 
-                      <p className="text-gray-500 text-sm line-clamp-3">
-                        {exp.description}
-                      </p>
+                      <p className=" text-sm line-clamp-3">{exp.description}</p>
                     </div>
                   ))}
                 </div>

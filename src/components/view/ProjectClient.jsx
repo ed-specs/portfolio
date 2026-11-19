@@ -121,7 +121,7 @@ export default function ProjectsClientView({ initialProjects }) {
                         <div className="flex gap-4 p-5">
                           {/* icon */}
                           <div className="flex items-baseline flex-nowrap">
-                            <div className="size-12 md:size-14 lg:size-16 ">
+                            <div className="size-12 md:size-14 ">
                               {p.iconurl ? (
                                 <img
                                   src={p.iconurl}
@@ -144,7 +144,7 @@ export default function ProjectsClientView({ initialProjects }) {
                               </h1>
                             </div>
                             <div className="flex ">
-                              <p className="text-gray-500 text-sm line-clamp-3 ">
+                              <p className=" text-sm line-clamp-3 ">
                                 {p.description}
                               </p>
                             </div>

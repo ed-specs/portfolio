@@ -113,7 +113,7 @@ export default function ExperienceDetailsClient({
           {errorMsg && <ErrorBanner message={errorMsg} />}
 
           <div className="flex flex-col gap-4">
-            <div className="flex flex-col gap-4 flex-1  p-5 rounded-lg border border-gray-300 hover:border-black/90 transition-colors duration-300">
+            <div className="flex flex-col gap-4 flex-1">
               <div className="flex flex-col sm:flex-row gap-4">
                 <div className="flex flex-col gap-4 md:flex-1">
                   <div className="flex flex-col">
@@ -146,10 +146,13 @@ export default function ExperienceDetailsClient({
                 </div>
               </div>
 
-              <div className="rounded-lg border border-gray-300 px-4 py-4 mt-2">
-                <p className="text-gray-500 text-sm">
-                  {experience.description}
-                </p>
+              <div className="flex flex-col gap-1.5">
+                <span className="text-gray-500 text-sm">
+                  Experience Description
+                </span>{" "}
+                <div className="rounded-lg border border-gray-300 p-5 ">
+                  <p className=" text-sm">{experience.description}</p>
+                </div>
               </div>
 
               <div className="flex flex-col gap-1 md:gap-4 items-center md:items-baseline justify-center mt-4">

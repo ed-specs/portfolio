@@ -145,7 +145,7 @@ export default function EditProjectsForm({
       <div className="flex flex-col gap-3.5">
         {/* Image Container & Upload Input (Matching your EditProfile style) */}
         <div className="flex items-center gap-4">
-          <div className="flex size-14 md:size-16 lg:size-18 bg-transparent rounded-lg items-center justify-center text-3xl font-bold text-gray-500 overflow-hidden border border-gray-300 hover:border-black/90 transition-colors duration-300 shrink-0">
+          <div className="flex size-12 md:size-14 bg-transparent rounded-lg items-center justify-center text-3xl font-bold text-gray-500 overflow-hidden border border-gray-300 hover:border-black/90 transition-colors duration-300 shrink-0">
             {previewUrl ? (
               <img
                 src={previewUrl}
