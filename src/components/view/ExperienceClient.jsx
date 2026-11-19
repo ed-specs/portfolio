@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import Sidebar from "../ui/Sidebar";
 import HeaderSection from "../ui/Header";
@@ -15,6 +15,15 @@ export default function ExperienceClientView({ initialExperience }) {
   const [showAddExperience, setShowAddExperience] = useState(false);
   const [selectedExperience, setSelectedExperience] = useState(null);
 
+  useEffect(() => {
+    if (!successMsg) return;
+
+    const timer = setTimeout(() => {
+      setSuccessMsg("");
+    }, 4000);
+    return () => clearTimeout(timer);
+  }, [successMsg]);
+
   const handleAddExperience = (newExperience) => {
     setExperience((prev) => [newExperience, ...prev]);
     setShowAddExperience(false);
@@ -26,29 +35,42 @@ export default function ExperienceClientView({ initialExperience }) {
         item.id === updateExperience.id ? updateExperience : item,
       ),
     );
-    setSelectProject(null);
+    setSelectedExperience(null);
   };
 
   const handleDeleteSuccess = (deletedExperienceId) => {
     setExperience((prev) =>
       prev.filter((item) => item.id !== deletedExperienceId),
     );
-    setSelectProject(null);
+    setSelectedExperience(null);
   };
 
-  const formatDateRange = (startDate, endDate, isCurrent) => {
+
+  const formatDateRange = (experience.start_date, experience.end_date, experience.is_current) => {
     const options = { month: "short", year: "numeric" };
-    const start = new Date(startDate).toLocaleDateString("en-US", options);
-    if (isCurrent) return `${start} – Present`;
-    if (!endDate) return start;
-    const end = new Date(endDate).toLocaleDateString("en-US", options);
-    return `<div className="border border-gray-300 rounded-md px-2 py-1">
-                  <p className="text-[11px]">${start}</p>
-                </div>
-                <span className="text-gray-500 text-xs">-</span>
-                <div className="border border-gray-300 rounded-md px-2 py-1">
-                  <p className="text-[11px]">${end}</p>
-                </div>`;
+    const start = new Date(experience.start_date).toLocaleDateString("en-US", options);
+
+    if (isCurrent) {
+      return <span>{start} – Present</span>;
+    }
+
+    if (!experience.end_date) {
+      return <span>{start}</span>;
+    }
+
+    const end = new Date(experience.end_date).toLocaleDateString("en-US", options);
+
+    return (
+      <>
+        <div className="border border-gray-300 rounded-md px-2 py-1">
+          <p className="text-[11px]">{start}</p>
+        </div>
+        <span className="text-gray-500 text-xs">-</span>
+        <div className="border border-gray-300 rounded-md px-2 py-1">
+          <p className="text-[11px]">{end}</p>
+        </div>
+      </>
+    );
   };
 
   return (
@@ -116,7 +138,6 @@ export default function ExperienceClientView({ initialExperience }) {
                   </Button>
                 </div>
 
-                {successMsg && <SuccessBanner message={successMsg} />}
                 <div className="flex flex-col gap-4">
                   {experience.map((exp) => (
                     <div
@@ -135,9 +156,9 @@ export default function ExperienceClientView({ initialExperience }) {
 
                       <div className="flex items-center gap-2">
                         {formatDateRange(
-                          exp.startDate,
-                          exp.endDate,
-                          exp.isCurrent,
+                          experience.startDate,
+                          experience.endDate,
+                          experience.isCurrent,
                         )}
                       </div>
 

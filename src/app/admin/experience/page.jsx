@@ -6,7 +6,7 @@ import Loading from "../Loading";
 
 async function ExperienceContent() {
   await connection();
-  const experience = getExperienceRecord();
+  const experience = await getExperienceRecord();
   return <ExperienceClientView initialExperience={experience} />;
 }
 

@@ -61,16 +61,28 @@ export default function ExperienceDetailsClient({
   const formatDateRange = (startDate, endDate, isCurrent) => {
     const options = { month: "short", year: "numeric" };
     const start = new Date(startDate).toLocaleDateString("en-US", options);
-    if (isCurrent) return `${start} – Present`;
-    if (!endDate) return start;
+
+    if (isCurrent) {
+      return <span>{start} – Present</span>;
+    }
+
+    if (!endDate) {
+      return <span>{start}</span>;
+    }
+
     const end = new Date(endDate).toLocaleDateString("en-US", options);
-    return `<div className="border border-gray-300 rounded-md px-2 py-1">
-                  <p className="text-[11px]">${start}</p>
-                </div>
-                <span className="text-gray-500 text-xs">-</span>
-                <div className="border border-gray-300 rounded-md px-2 py-1">
-                  <p className="text-[11px]">${end}</p>
-                </div>`;
+
+    return (
+      <>
+        <div className="border border-gray-300 rounded-md px-2 py-1">
+          <p className="text-[11px]">{start}</p>
+        </div>
+        <span className="text-gray-500 text-xs">-</span>
+        <div className="border border-gray-300 rounded-md px-2 py-1">
+          <p className="text-[11px]">{end}</p>
+        </div>
+      </>
+    );
   };
 
   return (
