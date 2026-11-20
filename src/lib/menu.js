@@ -10,11 +10,13 @@ import {
   User,
   LayoutDashboard,
   KeyRound,
+  Trophy,
 } from "lucide-react";
 
 const MENU_OPTIONS = [
   { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
   { name: "About Me", href: "/admin/about-me", icon: BookUser },
+  { name: "Achievements", href: "/admin/achievements", icon: Trophy },
   { name: "Projects", href: "/admin/projects", icon: FolderOpenDot },
   { name: "Experience", href: "/admin/experience", icon: Target },
   { name: "Tech Stacks", href: "/admin/tech-stacks", icon: Layers },

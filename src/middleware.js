@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 const protectedRoutes = [
   "/admin/dashboard",
   "/admin/about-me",
+  "/admin/achievements",
   "/admin/projects",
   "/admin/experience",
   "/admin/tech-stacks",
