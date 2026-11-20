@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ChevronRight } from "lucide-react";
+import { Globe, GitFork } from "lucide-react";
 
 import HeaderSection from "@/components/ui/Header";
 import Sidebar from "@/components/ui/Sidebar";
@@ -160,19 +160,31 @@ export default function ProjectsClientView({ initialProjects }) {
                             </div>
                           </div>
                         </div>
-                        {p.link && (
-                          <div className="border-t border-gray-300 px-5 py-3 flex items-center justify-end gap-2">
+
+                        <div className="border-t border-gray-300 px-5 py-3 flex items-center justify-end gap-6">
+                          {p.github_link && (
+                            <Link
+                              href={p.github_link}
+                              target="_blank"
+                              onClick={(e) => e.stopPropagation()}
+                              className="text-xs text-gray-500 hover:text-black/90 transition-colors duration-300 flex items-center gap-1.5"
+                            >
+                              Visit Github
+                              <GitFork className="size-3" />
+                            </Link>
+                          )}
+                          {p.link && (
                             <Link
                               href={p.link}
                               target="_blank"
                               onClick={(e) => e.stopPropagation()}
-                              className="text-xs text-gray-500 hover:text-black/90 transition-colors duration-300 flex items-center gap-2"
+                              className="text-xs text-gray-500 hover:text-black/90 transition-colors duration-300 flex items-center gap-1.5"
                             >
                               Visit Site
-                              <ChevronRight className="size-4" />
+                              <Globe className="size-3" />
                             </Link>
-                          </div>
-                        )}
+                          )}
+                        </div>
                       </div>
                     ))}
                   </div>

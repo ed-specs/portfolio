@@ -57,6 +57,7 @@ function parseProjectFormData(formData) {
     description: formData.get("description"),
     techstack,
     link: formData.get("link") || "",
+    github_link: formData.get("github_link") || "",
   });
 
   if (!validation.success) {
@@ -129,6 +130,7 @@ export async function createProjectAction(formData) {
       description: input.data.description,
       techstack: input.data.techstack,
       link: input.data.link || null,
+      github_link: input.data.github_link || null,
       iconurl: iconUrl,
     });
   } catch (error) {
@@ -190,6 +192,7 @@ export async function updateProjectAction(projectId, formData) {
       description: input.data.description,
       techstack: input.data.techstack,
       link: input.data.link || null,
+      github_link: input.data.github_link || null,
       iconurl: newIconUrl || existingProject.iconurl || null,
     });
   } catch (error) {

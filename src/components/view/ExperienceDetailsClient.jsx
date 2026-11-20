@@ -173,7 +173,7 @@ export default function ExperienceDetailsClient({
                 </span>
                 <div className="rounded-lg border border-gray-300 p-5">
                   <div
-                    className="prose prose-sm max-w-none text-gray-700"
+                    className="prose prose-sm max-w-none text-black/90"
                     dangerouslySetInnerHTML={{
                       __html: DOMPurify.sanitize(experience.description || ""),
                     }}

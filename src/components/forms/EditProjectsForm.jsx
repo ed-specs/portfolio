@@ -124,6 +124,8 @@ export default function EditProjectsForm({
       data.append("description", formData.description.trim());
       data.append("techstack", JSON.stringify(finalTechstack));
       data.append("link", formData.link.trim());
+      data.append("link", formData.link.trim());
+      data.append("github_link", formData.github_link.trim());
 
       if (iconFile) {
         data.append("icon", iconFile);
@@ -229,6 +231,18 @@ export default function EditProjectsForm({
           value={formData.link}
           onChange={(e) =>
             setFormData((prev) => ({ ...prev, link: e.target.value }))
+          }
+          disabled={isLoading}
+          required
+        />
+        <Input
+          id="githubLink"
+          label="Github Link"
+          type="text"
+          placeholder="https://project-link-url.com"
+          value={formData.github_linklink}
+          onChange={(e) =>
+            setFormData((prev) => ({ ...prev, github_link: e.target.value }))
           }
           disabled={isLoading}
           required

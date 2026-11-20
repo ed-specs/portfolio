@@ -1,7 +1,8 @@
 "use client";
 
+import DOMPurify from "isomorphic-dompurify";
 import { useState, useEffect } from "react";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, GitFork, Globe } from "lucide-react";
 import Link from "next/link";
 import Button from "../ui/Button";
 import ErrorBanner from "../ui/ErrorBanner";
@@ -86,10 +87,10 @@ export default function ProjectDetailsClient({
           {errorMsg && <ErrorBanner message={errorMsg} />}
           <div className="flex flex-col gap-4">
             <div className="flex flex-col sm:flex-row gap-4">
-              <div className="flex flex-1 gap-6 items-center ">
+              <div className="flex flex-1 gap-4 items-center ">
                 {/* icon */}
                 <div className="flex">
-                  <div className="size-12 md:size-14 lg:size-16 ">
+                  <div className="size-12 md:size-14 ">
                     {project.iconurl ? (
                       <img
                         src={project.iconurl}
@@ -104,19 +105,34 @@ export default function ProjectDetailsClient({
                   </div>
                 </div>
                 {/* title and link */}
-                <div className="flexflex-1 flex-col">
+                <div className="flex flex-1 flex-col gap-1">
                   <h1 className="text-lg md:text-xl font-bold">
                     {project.title}
                   </h1>
-                  {project.link && (
-                    <Link
-                      href={project.link}
-                      target="_blank"
-                      className="text-gray-500 text-xs hover:text-black/90 transition-colors duration-300"
-                    >
-                      {project.link}
-                    </Link>
-                  )}
+                  <div className="flex items-center gap-4">
+                    {project.github_link && (
+                      <Link
+                        href={project.github_link}
+                        target="_blank"
+                        onClick={(e) => e.stopPropagation()}
+                        className="text-xs text-gray-500 hover:text-black/90 transition-colors duration-300 flex items-center gap-1.5"
+                      >
+                        Visit Github
+                        <GitFork className="size-3" />
+                      </Link>
+                    )}
+                    {project.link && (
+                      <Link
+                        href={project.link}
+                        target="_blank"
+                        onClick={(e) => e.stopPropagation()}
+                        className="text-xs text-gray-500 hover:text-black/90 transition-colors duration-300 flex items-center gap-1.5"
+                      >
+                        Visit Site
+                        <Globe className="size-3" />
+                      </Link>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -134,12 +150,13 @@ export default function ProjectDetailsClient({
 
             <div className="flex flex-col gap-1.5">
               <span className="text-sm text-gray-500">Project Description</span>
-              <textarea
-                rows="10"
-                value={project.description}
-                disabled
-                className="rounded-lg border border-gray-300 p-5"
-              ></textarea>
+
+              <div
+                className="p-5 text-sm rounded-lg border border-gray-300 hover:border-black/90 transition-colors duration-300 "
+                dangerouslySetInnerHTML={{
+                  __html: DOMPurify.sanitize(project.description || ""),
+                }}
+              />
             </div>
 
             <div className="flex flex-col gap-2">
