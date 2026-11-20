@@ -17,6 +17,7 @@ export default function AddProjectsForm({
   const [techstack, setTechstack] = useState([]);
   const [techInput, setTechInput] = useState("");
   const [link, setLink] = useState("");
+  const [githubLink, setGithubLink] = useState("");
 
   const [iconFile, setIconFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState("");
@@ -122,6 +123,7 @@ export default function AddProjectsForm({
       data.append("description", description.trim());
       data.append("techstack", JSON.stringify(finalTechstack));
       data.append("link", link.trim());
+      data.append("github_link", githubLink.trim());
 
       if (iconFile) {
         data.append("icon", iconFile);
@@ -219,6 +221,16 @@ export default function AddProjectsForm({
           placeholder="https://project-link-url.com"
           value={link}
           onChange={(e) => setLink(e.target.value)}
+          disabled={isLoading}
+          required
+        />
+        <Input
+          id="githubLink"
+          label="Github Link"
+          type="text"
+          placeholder="https://project-link-url.com"
+          value={githubLink}
+          onChange={(e) => setGithubLink(e.target.value)}
           disabled={isLoading}
           required
         />

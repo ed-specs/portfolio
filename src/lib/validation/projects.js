@@ -23,4 +23,9 @@ export const projectSchema = z.object({
     .array(z.string().trim().min(1))
     .min(1, "Add at least one technology."),
   link: z.string().trim().url("Please enter a valid URL.").or(z.literal("")),
+  github_link: z
+    .string()
+    .trim()
+    .url("Please enter a valid URL.")
+    .or(z.literal("")),
 });
