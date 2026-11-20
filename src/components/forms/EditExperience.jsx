@@ -75,18 +75,6 @@ export default function EditExperienceForm({
 
       <div className="flex flex-col gap-4">
         <Input
-          id="role"
-          label="Job Title"
-          type="text"
-          placeholder="e.g. Web Developer"
-          value={formData.role}
-          onChange={(e) =>
-            setFormData.role((prev) => ({ ...prev, role: e.target.value }))
-          }
-          disabled={isLoading}
-          required
-        />
-        <Input
           id="company"
           label="Organization / Company"
           type="text"
@@ -98,6 +86,19 @@ export default function EditExperienceForm({
           disabled={isLoading}
           required
         />
+        <Input
+          id="role"
+          label="Job Title"
+          type="text"
+          placeholder="e.g. Web Developer"
+          value={formData.role}
+          onChange={(e) =>
+            setFormData.role((prev) => ({ ...prev, role: e.target.value }))
+          }
+          disabled={isLoading}
+          required
+        />
+
         <div className="flex flex-col gap-1.5 ">
           <div className="flex items-center gap-4">
             <div className="w-full">

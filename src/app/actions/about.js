@@ -1,5 +1,6 @@
 "use server";
 
+import DOMPurify from "isomorphic-dompurify";
 import { createClient } from "@/lib/supabase/server";
 import { aboutSchema } from "@/lib/validation/about";
 import { updateAboutRecord } from "@/services/about";
@@ -22,10 +23,16 @@ export async function updateAboutAction(formData) {
     return { success: false, error: validation.error.issues[0].message };
   }
 
-  const cleanText = validation.data.content || null;
+  // Sanitize HTML before saving to Supabase
+  const cleanHtml = validation.data.content
+    ? DOMPurify.sanitize(validation.data.content, {
+        ALLOWED_TAGS: ["p", "br", "strong", "em", "ul", "ol", "li"],
+        ALLOWED_ATTR: [],
+      })
+    : null;
 
   try {
-    const updatedContent = await updateAboutRecord(user.id, cleanText);
+    const updatedContent = await updateAboutRecord(user.id, cleanHtml);
     revalidatePath("/admin/about-me");
     revalidatePath("/");
 

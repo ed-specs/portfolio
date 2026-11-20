@@ -218,7 +218,9 @@ export default function ProfileClientView({
                     <div className="flex items-center gap-4 w-full">
                       <Globe className="size-5 shrink-0" />
                       <div className="flex flex-col ">
-                        <span className="text-sm">{link.platform}</span>
+                        <span className="text-sm font-medium ">
+                          {link.platform}
+                        </span>
                         <span className="text-xs text-gray-500 truncate">
                           {link.url}
                         </span>
@@ -236,7 +238,7 @@ export default function ProfileClientView({
             <span className="text-gray-500 text-sm uppercase font-medium">
               Resume / CV
             </span>
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-lg border border-gray-300 hover:border-black/90 transition-colors duration-300 px-4 py-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-lg border border-gray-300 hover:border-black/90 transition-colors duration-300 p-4">
               <div className="flex items-center gap-4">
                 <FileText className="size-6 shrink-0" />
                 <div className="flex flex-col">
@@ -252,25 +254,25 @@ export default function ProfileClientView({
               </div>
 
               {profile.resume_url && (
-                <div className="flex items-center gap-2">
-                  <a
+                <div className="flex items-center justify-end gap-2">
+                  <Link
                     href={profile.resume_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 border border-gray-300 rounded-lg px-3 py-1.5 text-xs font-medium hover:border-black/90 transition-colors"
+                    className="inline-flex items-center gap-1.5 border border-gray-300 rounded-md px-4 py-2 text-sm w-full justify-center font-medium hover:border-black/90 transition-colors duration-300"
                   >
                     <span>View</span>
                     <ExternalLink className="size-3.5" />
-                  </a>
-                  <a
+                  </Link>
+                  <Link
                     href={`${profile.resume_url}${
                       profile.resume_url.includes("?") ? "&" : "?"
                     }download=${profile.firstname}_${profile.lastname}_Resume.pdf`}
-                    className="inline-flex items-center gap-1.5 bg-black text-white rounded-lg px-3 py-1.5 text-xs font-medium hover:bg-black/80 transition-colors"
+                    className="inline-flex items-center gap-1.5 bg-black text-white rounded-md px-4 py-2 text-sm w-full justify-center font-medium hover:bg-black/85 transition-colors duration-300"
                   >
                     <span>Download</span>
                     <Download className="size-3.5" />
-                  </a>
+                  </Link>
                 </div>
               )}
             </div>
