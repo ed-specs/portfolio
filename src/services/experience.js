@@ -48,7 +48,7 @@ export async function updateExperienceRecord(
 }
 
 export async function deleteExperienceRecord(experienceId, userId) {
-  const supabase = await createClient();
+  const supabase = await createServerClient();
 
   const { error } = await supabase
     .from("experiences")
