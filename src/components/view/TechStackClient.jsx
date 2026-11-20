@@ -96,9 +96,9 @@ export default function TechStackClient({ initialTechStack }) {
         ) : (
           <>
             <div className="flex flex-col">
-              <h1 className="text-lg font-bold">Tech Stacks.</h1>
+              <h1 className="text-lg font-bold">Tech Stacks</h1>
               <span className="text-gray-500 text-sm">
-                Manage your tech stacks and categories.
+                Manage your tech stacks and categories
               </span>
             </div>
 
@@ -111,7 +111,7 @@ export default function TechStackClient({ initialTechStack }) {
                     No Tech Stack Available
                   </h1>
                   <span className="text-gray-500 text-sm text-center">
-                    Create a category first before adding your tech stacks.
+                    Create a category first before adding your tech stacks
                   </span>
                 </div>
                 <div className="flex items-center justify-center">
@@ -174,7 +174,7 @@ export default function TechStackClient({ initialTechStack }) {
                         </div>
                       ) : (
                         <p className="text-xs text-gray-400 italic">
-                          No technologies added under this category yet.
+                          No technologies added under this category yet
                         </p>
                       )}
                     </div>
