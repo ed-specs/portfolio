@@ -16,7 +16,15 @@ export const experienceSchema = z
       .string()
       .trim()
       .min(1, "Description is required.")
-      .max(3000, "Description is too long."),
+      .max(10000, "Formatted HTML is too long")
+      .refine(
+        (html) => html.replace(/<[^>]*>/g, "").trim().length > 0,
+        "Project description is required.",
+      )
+      .refine(
+        (html) => html.replace(/<[^>]*>/g, "").length <= 3000,
+        "Project description is too long",
+      ),
     start_date: z.string().min(1, "Start date is required."),
     end_date: z.string().optional().nullable(),
     is_current: z.boolean().default(false),

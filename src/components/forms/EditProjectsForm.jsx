@@ -5,6 +5,7 @@ import { updateProjectAction } from "@/app/actions/projects";
 import ErrorBanner from "../ui/ErrorBanner";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
+import RichTextEditor from "../ui/RichTextEditor";
 
 export default function EditProjectsForm({
   projects,
@@ -88,6 +89,11 @@ export default function EditProjectsForm({
     setPreviewUrl(URL.createObjectURL(file));
   };
 
+  const plainTextDescription = (formData.description || "").replace(
+    /<[^>]*>/g,
+    "",
+  );
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -98,10 +104,15 @@ export default function EditProjectsForm({
 
     if (
       !formData.title.trim() ||
-      !formData.description.trim() ||
+      !plainTextDescription.trim() ||
       finalTechstack.length === 0
     ) {
       setErrorMsg("Title, Description, and Tech Stack are required.");
+      return;
+    }
+
+    if (plainTextDescription.length > 3000) {
+      setErrorMsg("Description cannot exceed 3000 characters.");
       return;
     }
 
@@ -188,28 +199,25 @@ export default function EditProjectsForm({
             Project Description
           </label>
           <div className="flex flex-col gap-1">
-            <textarea
-              id="description"
-              name="description"
-              type="text"
-              rows="10"
-              maxLength="3000"
-              placeholder="Enter your project description"
-              value={formData.description}
-              className="border border-gray-300 w-full rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-black/90 transition-colors duration-300 disabled:cursor-not-allowed disabled:opacity-80 readonly:disabled:opacity-80"
-              onChange={(e) =>
+            <RichTextEditor
+              value={formData.description || ""}
+              onChange={(html) =>
                 setFormData((prev) => ({
                   ...prev,
-                  description: e.target.value,
+                  description: html,
                 }))
               }
               disabled={isLoading}
-              required
-            ></textarea>
+              placeholder="Enter your project description"
+            />
             <span
-              className={`${formData.description.length > 3000 ? "text-red-500" : "text-gray-500 text-xs"} transition-colors duration-300`}
+              className={`${
+                plainTextDescription.length > 3000
+                  ? "text-red-500"
+                  : "text-gray-500"
+              } text-xs transition-colors duration-300`}
             >
-              {formData.description.length} / 3000 characters
+              {plainTextDescription.length} / 3000 characters
             </span>
           </div>
         </div>

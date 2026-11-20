@@ -1,5 +1,6 @@
 "use server";
 
+import DOMPurify from "isomorphic-dompurify";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { projectSchema } from "@/lib/validation/projects";
@@ -65,12 +66,18 @@ function parseProjectFormData(formData) {
     };
   }
 
+  const cleanDescription = DOMPurify.sanitize(validation.data.description, {
+    ALLOWED_TAGS: ["p", "br", "strong", "em", "ul", "ol", "li"],
+    ALLOWED_ATTR: [],
+  });
+
   const iconValue = formData.get("icon");
   if (iconValue !== null && !(iconValue instanceof File)) {
     return { success: false, error: "Invalid project icon." };
   }
 
-  const file = iconValue instanceof File && iconValue.size > 0 ? iconValue : null;
+  const file =
+    iconValue instanceof File && iconValue.size > 0 ? iconValue : null;
   if (file && !ALLOWED_TYPES.includes(file.type)) {
     return {
       success: false,
@@ -81,7 +88,10 @@ function parseProjectFormData(formData) {
     return { success: false, error: "Icon size must be 2MB or less." };
   }
 
-  return { success: true, data: { ...validation.data, file } };
+  return {
+    success: true,
+    data: { ...validation.data, description: cleanDescription, file },
+  };
 }
 
 function parseProjectId(projectId) {
@@ -130,7 +140,8 @@ export async function createProjectAction(formData) {
         console.error("Error cleaning up unused project icon:", cleanupError);
         return {
           success: false,
-          error: "Project could not be created, and its uploaded icon could not be cleaned up.",
+          error:
+            "Project could not be created, and its uploaded icon could not be cleaned up.",
         };
       }
     }
@@ -190,7 +201,8 @@ export async function updateProjectAction(projectId, formData) {
         console.error("Error cleaning up unused project icon:", cleanupError);
         return {
           success: false,
-          error: "Project could not be updated, and its uploaded icon could not be cleaned up.",
+          error:
+            "Project could not be updated, and its uploaded icon could not be cleaned up.",
         };
       }
     }

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Button from "../ui/Button";
 import { updateAboutAction } from "@/app/actions/about";
 import ErrorBanner from "../ui/ErrorBanner";
+import RichTextEditor from "../ui/RichTextEditor";
 
 export default function AboutMeForm({
   initialAbout,
@@ -24,11 +25,14 @@ export default function AboutMeForm({
     return () => clearTimeout(timer);
   }, [errorMsg]);
 
+  // Count visible characters without HTML tags
+  const plainTextLength = content.replace(/<[^>]*>/g, "").length;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
 
-    if (content.length > 3000) {
+    if (plainTextLength > 3000) {
       setErrorMsg("About me content cannot exceed 3000 characters.");
       return;
     }
@@ -57,30 +61,28 @@ export default function AboutMeForm({
         <h1 className="text-lg md:text-xl font-bold">Edit About Me</h1>
         <span className="text-gray-500 text-sm">Edit about me content</span>
       </div>
+
       {errorMsg && <ErrorBanner message={errorMsg} />}
+
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-1.5">
           <label htmlFor="content" className="text-sm text-gray-500">
             About Me
           </label>
           <div className="flex flex-col gap-1">
-            <textarea
-              id="content"
-              name="content"
-              type="text"
-              rows="10"
-              maxLength="3000"
+            <RichTextEditor
               value={content}
-              placeholder="I am Edward Gatbonton and I..."
-              className="border border-gray-300 w-full rounded-lg p-5 text-sm focus:outline-none focus:border-black/90 transition-colors duration-300 disabled:cursor-not-allowed disabled:opacity-80 readonly:disabled:opacity-80"
-              onChange={(e) => setContent(e.target.value)}
+              onChange={(html) => setContent(html)}
               disabled={isLoading}
+              placeholder="I am Edward Gatbonton and I..."
             />
 
             <span
-              className={`${content.length > 3000 ? "text-red-500" : "text-gray-500"} text-xs transition-colors duration-300`}
+              className={`${
+                plainTextLength > 3000 ? "text-red-500" : "text-gray-500"
+              } text-xs transition-colors duration-300`}
             >
-              {content.length} / 3000 characters
+              {plainTextLength} / 3000 characters
             </span>
           </div>
         </div>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 
+import DOMPurify from "isomorphic-dompurify";
 import HeaderSection from "@/components/ui/Header";
 import Sidebar from "@/components/ui/Sidebar";
 import Button from "@/components/ui/Button";
@@ -27,6 +28,9 @@ export default function AboutMeClient({ initialAbout }) {
     setAbout(newData);
     setIsEditing(false);
   };
+
+  const hasContent = about.replace(/<[^>]*>/g, "").trim().length > 0;
+
   return (
     <div className="lg:relative min-h-svh md:min-h-screen flex flex-col lg:flex-row">
       <HeaderSection />
@@ -49,7 +53,7 @@ export default function AboutMeClient({ initialAbout }) {
 
           {successMsg && <SuccessBanner message={successMsg} />}
 
-          {about.length === 0 ? (
+          {!hasContent ? (
             <div className="rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 flex flex-col items-center justify-center gap-6 py-12 px-6">
               <div className="flex flex-col items-center justify-center gap-1">
                 <h1 className="text-lg md:text-xl font-bold">No About Me</h1>
@@ -84,12 +88,12 @@ export default function AboutMeClient({ initialAbout }) {
 
               <div className="flex flex-col gap-1.5">
                 <span className="text-gray-500 text-sm">About Me</span>
-                <textarea
-                  value={about}
-                  rows="10"
-                  disabled
-                  className="p-5 text-sm rounded-lg border border-gray-300 hover:border-black/90 transition-colors duration-300"
-                ></textarea>
+                <div
+                  className="p-5 text-sm rounded-lg border border-gray-300 hover:border-black/90 transition-colors duration-300 prose prose-sm max-w-none min-h-60"
+                  dangerouslySetInnerHTML={{
+                    __html: DOMPurify.sanitize(about),
+                  }}
+                />
               </div>
             </>
           )}

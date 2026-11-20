@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { Minus } from "lucide-react";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
 import ErrorBanner from "../ui/ErrorBanner";
+import RichTextEditor from "../ui/RichTextEditor";
 import { createExperienceAction } from "@/app/actions/experience";
-import { Minus } from "lucide-react";
 
 export default function AddExperienceForm({
   onSuccess,
@@ -32,24 +33,43 @@ export default function AddExperienceForm({
     return () => clearTimeout(timer);
   }, [errorMsg]);
 
+  const plainTextDescription = description.replace(/<[^>]*>/g, "");
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrorMsg("");
 
-    if (!role.trim() || !company.trim() || !description || !startDate.trim()) {
+    if (
+      !role.trim() ||
+      !company.trim() ||
+      !plainTextDescription.trim() ||
+      !startDate
+    ) {
       setErrorMsg(
         "Job title, Company, Description, and Start Date are required.",
       );
       return;
     }
+
+    if (!isCurrent && !endDate) {
+      setErrorMsg("End Date is required unless you are currently employed.");
+      return;
+    }
+
+    if (plainTextDescription.length > 3000) {
+      setErrorMsg("Description cannot exceed 3000 characters.");
+      return;
+    }
+
     setIsLoading(true);
 
     try {
       const payload = {
         role: role.trim(),
         company: company.trim(),
-        description: description.trim(),
+        description,
         start_date: startDate,
-        end_date: isCurrent ? null : endDate || null,
+        end_date: isCurrent ? null : endDate,
         is_current: isCurrent,
       };
 
@@ -62,7 +82,7 @@ export default function AddExperienceForm({
 
       onSuccess(result.data);
       successMessage("Experience added successfully.");
-    } catch (err) {
+    } catch {
       setErrorMsg("Failed to add experience.");
     } finally {
       setIsLoading(false);
@@ -80,6 +100,16 @@ export default function AddExperienceForm({
 
       <div className="flex flex-col gap-4">
         <Input
+          id="company"
+          label="Organization / Company"
+          type="text"
+          placeholder="e.g. Outlier"
+          value={company}
+          onChange={(e) => setCompany(e.target.value)}
+          disabled={isLoading}
+          required
+        />
+        <Input
           id="role"
           label="Job Title"
           type="text"
@@ -89,17 +119,7 @@ export default function AddExperienceForm({
           disabled={isLoading}
           required
         />
-        <Input
-          id={company}
-          label="Organization / Company"
-          type="text"
-          placeholder="e.g. Outlier"
-          value={company}
-          onChange={(e) => setCompany(e.target.value)}
-          disabled={isLoading}
-          required
-        />
-        <div className="flex flex-col gap-1.5 ">
+        <div className="flex flex-col gap-1.5">
           <div className="flex items-center gap-4">
             <div className="w-full">
               <Input
@@ -109,32 +129,35 @@ export default function AddExperienceForm({
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
                 disabled={isLoading}
+                required
               />
             </div>
 
-            <Minus className="size-5 text-gray-500 mt-6" />
+            <Minus className="size-5 text-gray-500 mt-6 shrink-0" />
 
             <div className="w-full">
-              {" "}
               <Input
                 id="endDate"
                 label="End Date"
                 type="date"
-                value={endDate}
+                value={isCurrent ? "" : endDate}
                 onChange={(e) => setEndDate(e.target.value)}
-                disabled={isLoading}
+                disabled={isLoading || isCurrent}
+                required={!isCurrent}
               />
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 mt-1">
             <input
               type="checkbox"
               id="isCurrent"
-              value={isCurrent}
+              checked={isCurrent}
+              disabled={isLoading}
               onChange={(e) => {
                 setIsCurrent(e.target.checked);
                 if (e.target.checked) setEndDate("");
               }}
+              className="cursor-pointer"
             />
             <label
               htmlFor="isCurrent"
@@ -146,27 +169,22 @@ export default function AddExperienceForm({
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="description" className="text-sm text-gray-500">
-            Description
-          </label>
+          <span className="text-sm text-gray-500">Description</span>
           <div className="flex flex-col gap-1">
-            <textarea
-              id="description"
-              name="description"
-              type="text"
-              rows="10"
-              maxLength="3000"
-              placeholder="e.g. During my internship..."
+            <RichTextEditor
               value={description}
-              className="border border-gray-300 w-full rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-black/90 transition-colors duration-300 disabled:cursor-not-allowed disabled:opacity-80 readonly:disabled:opacity-80"
-              onChange={(e) => setDescription(e.target.value)}
+              onChange={(html) => setDescription(html)}
               disabled={isLoading}
-              required
-            ></textarea>
+              placeholder="e.g. During my internship..."
+            />
             <span
-              className={`${description.length > 3000 ? "text-red-500" : "text-gray-500 "} text-xs transition-colors duration-300`}
+              className={`${
+                plainTextDescription.length > 3000
+                  ? "text-red-500"
+                  : "text-gray-500"
+              } text-xs transition-colors duration-300`}
             >
-              {description.length} / 3000 characters
+              {plainTextDescription.length} / 3000 characters
             </span>
           </div>
         </div>
@@ -182,7 +200,7 @@ export default function AddExperienceForm({
           Discard
         </Button>
         <Button disabled={isLoading} type="submit" variant="primary">
-          Save Changes
+          {isLoading ? "Saving..." : "Save Changes"}
         </Button>
       </div>
     </form>

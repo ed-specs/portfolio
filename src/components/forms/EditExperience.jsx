@@ -1,19 +1,20 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { Minus } from "lucide-react";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
 import ErrorBanner from "../ui/ErrorBanner";
+import RichTextEditor from "../ui/RichTextEditor";
 import { updateExperienceAction } from "@/app/actions/experience";
-import { Minus } from "lucide-react";
 
 export default function EditExperienceForm({
-  exprience,
+  experience,
   onEditSuccess,
   onCancel,
   successMessage,
 }) {
-  const [formData, setFormData] = useState(exprience);
+  const [formData, setFormData] = useState(experience);
 
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
@@ -28,27 +29,50 @@ export default function EditExperienceForm({
     return () => clearTimeout(timer);
   }, [errorMsg]);
 
+  const plainTextDescription = (formData.description || "").replace(
+    /<[^>]*>/g,
+    "",
+  );
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrorMsg("");
 
-    if (!role.trim() || !company.trim() || !description || !startDate.trim()) {
+    if (
+      !formData.role?.trim() ||
+      !formData.company?.trim() ||
+      !plainTextDescription.trim() ||
+      !formData.start_date
+    ) {
       setErrorMsg(
         "Job title, Company, Description, and Start Date are required.",
       );
       return;
     }
+
+    if (!formData.is_current && !formData.end_date) {
+      setErrorMsg("End Date is required unless you are currently employed.");
+      return;
+    }
+
+    if (plainTextDescription.length > 3000) {
+      setErrorMsg("Description cannot exceed 3000 characters.");
+      return;
+    }
+
     setIsLoading(true);
 
     try {
-      const data = new FormData();
-      data.append("role", formData.role.trim());
-      data.append("company", formData.company.trim());
-      data.append("description", formData.description.trim());
-      data.append("start_date", formData.startDate);
-      data.append("end_date", formData.isCurrent ? null : formData.endDate);
-      data.append("is_current", formData.isCurrent);
+      const payload = {
+        role: formData.role.trim(),
+        company: formData.company.trim(),
+        description: formData.description,
+        start_date: formData.start_date,
+        end_date: formData.is_current ? null : formData.end_date,
+        is_current: Boolean(formData.is_current),
+      };
 
-      const result = await updateExperienceAction(payload);
+      const result = await updateExperienceAction(experience.id, payload);
 
       if (!result.success) {
         setErrorMsg(result.error);
@@ -57,7 +81,7 @@ export default function EditExperienceForm({
 
       onEditSuccess(result.data);
       successMessage("Experience updated successfully.");
-    } catch (err) {
+    } catch {
       setErrorMsg("Failed to update experience.");
     } finally {
       setIsLoading(false);
@@ -75,74 +99,83 @@ export default function EditExperienceForm({
 
       <div className="flex flex-col gap-4">
         <Input
-          id="role"
-          label="Job Title"
-          type="text"
-          placeholder="e.g. Web Developer"
-          value={formData.role}
-          onChange={(e) =>
-            setFormData.role((prev) => ({ ...prev, role: e.target.value }))
-          }
-          disabled={isLoading}
-          required
-        />
-        <Input
           id="company"
           label="Organization / Company"
           type="text"
           placeholder="e.g. Outlier"
-          value={formData.company}
+          value={formData.company || ""}
           onChange={(e) =>
             setFormData((prev) => ({ ...prev, company: e.target.value }))
           }
           disabled={isLoading}
           required
         />
-        <div className="flex flex-col gap-1.5 ">
+        <Input
+          id="role"
+          label="Job Title"
+          type="text"
+          placeholder="e.g. Web Developer"
+          value={formData.role || ""}
+          onChange={(e) =>
+            setFormData((prev) => ({ ...prev, role: e.target.value }))
+          }
+          disabled={isLoading}
+          required
+        />
+
+        <div className="flex flex-col gap-1.5">
           <div className="flex items-center gap-4">
             <div className="w-full">
               <Input
                 id="startDate"
                 label="Start Date"
                 type="date"
-                value={formData.start_date}
+                value={formData.start_date || ""}
                 onChange={(e) =>
                   setFormData((prev) => ({
                     ...prev,
-                    startDate: e.target.value,
+                    start_date: e.target.value,
                   }))
                 }
                 disabled={isLoading}
+                required
               />
             </div>
 
-            <Minus className="size-5 text-gray-500 mt-6" />
+            <Minus className="size-5 text-gray-500 mt-6 shrink-0" />
 
             <div className="w-full">
-              {" "}
               <Input
                 id="endDate"
                 label="End Date"
                 type="date"
-                value={formData.end_date}
+                value={formData.is_current ? "" : formData.end_date || ""}
                 onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, endDate: e.target.value }))
+                  setFormData((prev) => ({
+                    ...prev,
+                    end_date: e.target.value,
+                  }))
                 }
-                disabled={isLoading}
+                disabled={isLoading || Boolean(formData.is_current)}
+                required={!formData.is_current}
               />
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 mt-1">
             <input
               type="checkbox"
               id="isCurrent"
-              value={formData.isCurrent}
-              onChange={(e) =>
+              checked={Boolean(formData.is_current)}
+              disabled={isLoading}
+              onChange={(e) => {
+                const checked = e.target.checked;
                 setFormData((prev) => ({
                   ...prev,
-                  isCurrent: e.target.checked,
-                }))
-              }
+                  is_current: checked,
+                  end_date: checked ? "" : prev.end_date,
+                }));
+              }}
+              className="cursor-pointer"
             />
             <label
               htmlFor="isCurrent"
@@ -154,32 +187,27 @@ export default function EditExperienceForm({
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="description" className="text-sm text-gray-500">
-            Description
-          </label>
+          <span className="text-sm text-gray-500">Description</span>
           <div className="flex flex-col gap-1">
-            <textarea
-              id="description"
-              name="description"
-              type="text"
-              rows="10"
-              maxLength="3000"
-              placeholder="e.g. During my internship..."
-              value={formData.description}
-              className="border border-gray-300 w-full rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-black/90 transition-colors duration-300 disabled:cursor-not-allowed disabled:opacity-80 readonly:disabled:opacity-80"
-              onChange={(e) =>
+            <RichTextEditor
+              value={formData.description || ""}
+              onChange={(html) =>
                 setFormData((prev) => ({
                   ...prev,
-                  description: e.target.value,
+                  description: html,
                 }))
               }
               disabled={isLoading}
-              required
-            ></textarea>
+              placeholder="e.g. During my internship..."
+            />
             <span
-              className={`${formData.description.length > 3000 ? "text-red-500" : "text-gray-500 "} text-xs transition-colors duration-300`}
+              className={`${
+                plainTextDescription.length > 3000
+                  ? "text-red-500"
+                  : "text-gray-500"
+              } text-xs transition-colors duration-300`}
             >
-              {formData.description.length} / 3000 characters
+              {plainTextDescription.length} / 3000 characters
             </span>
           </div>
         </div>
@@ -195,7 +223,7 @@ export default function EditExperienceForm({
           Discard
         </Button>
         <Button disabled={isLoading} type="submit" variant="primary">
-          Save Changes
+          {isLoading ? "Saving..." : "Save Changes"}
         </Button>
       </div>
     </form>
