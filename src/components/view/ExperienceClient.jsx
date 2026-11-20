@@ -161,7 +161,9 @@ export default function ExperienceClientView({ initialExperience }) {
                         )}
                       </div>
 
-                      <p className=" text-sm line-clamp-3">{exp.description}</p>
+                      <p className="text-sm line-clamp-3">
+                        {exp.description?.replace(/<[^>]*>/g, " ")}
+                      </p>
                     </div>
                   ))}
                 </div>

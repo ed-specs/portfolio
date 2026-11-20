@@ -5,6 +5,7 @@ import { createProjectAction } from "@/app/actions/projects";
 import ErrorBanner from "../ui/ErrorBanner";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
+import RichTextEditor from "../ui/RichTextEditor";
 
 export default function AddProjectsForm({
   onCancel,
@@ -89,19 +90,31 @@ export default function AddProjectsForm({
     setPreviewUrl(URL.createObjectURL(file));
   };
 
+  const plainTextDescription = description.replace(/<[^>]*>/g, "");
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
 
     let finalTechstack = [...techstack];
     if (techInput.trim()) {
       finalTechstack.push(techInput.trim());
     }
 
-    if (!title.trim() || !description.trim() || finalTechstack.length === 0) {
+    if (
+      !title.trim() ||
+      !plainTextDescription.trim() ||
+      finalTechstack.length === 0
+    ) {
       setErrorMsg("Title, Description, and Tech Stack are required.");
       return;
     }
+
+    if (plainTextDescription.length > 3000) {
+      setErrorMsg("Description cannot exceed 3000 characters.");
+      return;
+    }
+
+    setIsLoading(true);
 
     try {
       const data = new FormData();
@@ -182,23 +195,20 @@ export default function AddProjectsForm({
             Project Description
           </label>
           <div className="flex flex-col gap-1">
-            <textarea
-              id="description"
-              name="description"
-              type="text"
-              rows="10"
-              maxLength="3000"
-              placeholder="Enter your project description"
+            <RichTextEditor
               value={description}
-              className="border border-gray-300 w-full rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-black/90 transition-colors duration-300 disabled:cursor-not-allowed disabled:opacity-80 readonly:disabled:opacity-80"
-              onChange={(e) => setDescription(e.target.value)}
+              onChange={(html) => setDescription(html)}
               disabled={isLoading}
-              required
-            ></textarea>
+              placeholder="Enter your project description"
+            />
             <span
-              className={`${description.length > 3000 ? "text-red-500" : "text-gray-500 "} text-xs transition-colors duration-300`}
+              className={`${
+                plainTextDescription.length > 3000
+                  ? "text-red-500"
+                  : "text-gray-500"
+              } text-xs transition-colors duration-300`}
             >
-              {description.length} / 3000 characters
+              {plainTextDescription.length} / 3000 characters
             </span>
           </div>
         </div>

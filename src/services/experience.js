@@ -42,7 +42,7 @@ export async function updateExperienceRecord(
     .eq("id", experienceId)
     .eq("user_id", userId)
     .select()
-    .single();
+    .maybeSingle();
   if (error) throw new Error(error.message);
   return data;
 }

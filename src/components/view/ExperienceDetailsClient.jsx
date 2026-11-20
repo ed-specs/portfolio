@@ -1,13 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Input from "../ui/Input";
+import DOMPurify from "isomorphic-dompurify";
+import { ChevronLeft } from "lucide-react";
 import Button from "../ui/Button";
 import ErrorBanner from "../ui/ErrorBanner";
 import SuccessBanner from "../ui/SuccessBanner";
-import { deleteExperienceAction } from "@/app/actions/experience";
-import { ChevronLeft } from "lucide-react";
 import EditExperienceForm from "../forms/EditExperience";
+import { deleteExperienceAction } from "@/app/actions/experience";
 
 export default function ExperienceDetailsClient({
   experience,
@@ -22,7 +22,7 @@ export default function ExperienceDetailsClient({
   const [successMsg, setSuccessMsg] = useState("");
 
   useEffect(() => {
-    if (!errorMsg) return;
+    if (!errorMsg && !successMsg) return;
 
     const timer = setTimeout(() => {
       setErrorMsg("");
@@ -52,7 +52,7 @@ export default function ExperienceDetailsClient({
 
       onDeleteSuccess(experience.id);
       deleteSuccessMessage("Experience deleted successfully.");
-    } catch (err) {
+    } catch {
       setErrorMsg("An unexpected error occurred while deleting.");
       setIsDeleting(false);
     }
@@ -60,17 +60,37 @@ export default function ExperienceDetailsClient({
 
   const formatDateRange = (startDate, endDate, isCurrent) => {
     const options = { month: "short", year: "numeric" };
-    const start = new Date(startDate).toLocaleDateString("en-US", options);
+    const start = new Date(`${startDate}T00:00:00`).toLocaleDateString(
+      "en-US",
+      options,
+    );
 
     if (isCurrent) {
-      return <span>{start} – Present</span>;
+      return (
+        <>
+          <div className="border border-gray-300 rounded-md px-2 py-1">
+            <p className="text-[11px]">{start}</p>
+          </div>
+          <span className="text-gray-500 text-xs">-</span>
+          <div className="border border-gray-300 rounded-md px-2 py-1">
+            <p className="text-[11px]">Present</p>
+          </div>
+        </>
+      );
     }
 
     if (!endDate) {
-      return <span>{start}</span>;
+      return (
+        <div className="border border-gray-300 rounded-md px-2 py-1">
+          <p className="text-[11px]">{start}</p>
+        </div>
+      );
     }
 
-    const end = new Date(endDate).toLocaleDateString("en-US", options);
+    const end = new Date(`${endDate}T00:00:00`).toLocaleDateString(
+      "en-US",
+      options,
+    );
 
     return (
       <>
@@ -89,7 +109,7 @@ export default function ExperienceDetailsClient({
     <div className="flex flex-col gap-6">
       {isEditing ? (
         <EditExperienceForm
-          exprience={experience}
+          experience={experience}
           onEditSuccess={(updatedExperience) => {
             setIsEditing(false);
             onEditSuccess(updatedExperience);
@@ -101,6 +121,7 @@ export default function ExperienceDetailsClient({
         <>
           <div className="flex">
             <button
+              type="button"
               onClick={onBack}
               className="flex items-center gap-2 text-gray-500 hover:text-black/90 transition-colors duration-300 cursor-pointer"
             >
@@ -141,7 +162,7 @@ export default function ExperienceDetailsClient({
                     onClick={() => setIsEditing(true)}
                     className="w-full sm:w-auto"
                   >
-                    Edit Project
+                    Edit Experience
                   </Button>
                 </div>
               </div>
@@ -149,9 +170,14 @@ export default function ExperienceDetailsClient({
               <div className="flex flex-col gap-1.5">
                 <span className="text-gray-500 text-sm">
                   Experience Description
-                </span>{" "}
-                <div className="rounded-lg border border-gray-300 p-5 ">
-                  <p className=" text-sm">{experience.description}</p>
+                </span>
+                <div className="rounded-lg border border-gray-300 p-5">
+                  <div
+                    className="prose prose-sm max-w-none text-gray-700"
+                    dangerouslySetInnerHTML={{
+                      __html: DOMPurify.sanitize(experience.description || ""),
+                    }}
+                  />
                 </div>
               </div>
 

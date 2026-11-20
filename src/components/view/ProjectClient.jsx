@@ -144,8 +144,8 @@ export default function ProjectsClientView({ initialProjects }) {
                               </h1>
                             </div>
                             <div className="flex ">
-                              <p className=" text-sm line-clamp-3 ">
-                                {p.description}
+                              <p className="text-sm line-clamp-3">
+                                {p.description?.replace(/<[^>]*>/g, " ")}
                               </p>
                             </div>
                             <div className="flex flex-wrap gap-2 mt-2">
@@ -160,16 +160,19 @@ export default function ProjectsClientView({ initialProjects }) {
                             </div>
                           </div>
                         </div>
-                        <div className="border-t border-gray-300 px-5 py-3 flex items-center justify-end gap-2">
-                          <Link
-                            href={p.link}
-                            target="_blank"
-                            className="text-xs text-gray-500 hover:text-black/90 transition-colors duration-300 flex items-center gap-2"
-                          >
-                            Visit Site
-                            <ChevronRight className="size-4" />
-                          </Link>
-                        </div>
+                        {p.link && (
+                          <div className="border-t border-gray-300 px-5 py-3 flex items-center justify-end gap-2">
+                            <Link
+                              href={p.link}
+                              target="_blank"
+                              onClick={(e) => e.stopPropagation()}
+                              className="text-xs text-gray-500 hover:text-black/90 transition-colors duration-300 flex items-center gap-2"
+                            >
+                              Visit Site
+                              <ChevronRight className="size-4" />
+                            </Link>
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
