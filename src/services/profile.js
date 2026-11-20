@@ -66,3 +66,50 @@ export async function deleteAvatarByPath(filePath) {
   const { error } = await supabase.storage.from("avatars").remove([filePath]);
   if (error) throw error;
 }
+
+// Add to src/services/profile.js
+export async function uploadResumeFile(userId, file) {
+  const supabase = await createServerClient();
+  const filePath = `${userId}/resume.pdf`;
+
+  const { error: uploadError } = await supabase.storage
+    .from("resumes")
+    .upload(filePath, file, {
+      contentType: "application/pdf",
+      upsert: true,
+    });
+
+  if (uploadError) throw new Error(uploadError.message);
+
+  const { data } = supabase.storage.from("resumes").getPublicUrl(filePath);
+
+  // Append timestamp query param so browsers bypass cached old PDFs after re-upload
+  const publicUrlWithVersion = `${data.publicUrl}?v=${Date.now()}`;
+
+  const { data: updatedProfile, error: updateError } = await supabase
+    .from("profile")
+    .update({ resume_url: publicUrlWithVersion })
+    .eq("id", userId)
+    .select()
+    .single();
+
+  if (updateError) throw new Error(updateError.message);
+  return updatedProfile;
+}
+
+export async function removeResumeFile(userId) {
+  const supabase = await createServerClient();
+  const filePath = `${userId}/resume.pdf`;
+
+  await supabase.storage.from("resumes").remove([filePath]);
+
+  const { data: updatedProfile, error } = await supabase
+    .from("profile")
+    .update({ resume_url: null })
+    .eq("id", userId)
+    .select()
+    .single();
+
+  if (error) throw new Error(error.message);
+  return updatedProfile;
+}

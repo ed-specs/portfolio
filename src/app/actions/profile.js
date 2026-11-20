@@ -3,14 +3,134 @@
 import { createClient } from "@/lib/supabase/server";
 import { profileSchema } from "@/lib/validation/profile";
 import {
+  socialLinkSchema,
+  MAX_RESUME_SIZE,
+  ALLOWED_RESUME_TYPES,
+} from "@/lib/validation/profile";
+import {
   updateProfileRecord,
   uploadAvatar,
   deleteAvatarByPath,
 } from "@/services/profile";
+import { uploadResumeFile, removeResumeFile } from "@/services/profile";
+import {
+  insertSocialLinkRecord,
+  deleteSocialLinkRecord,
+} from "@/services/socialLinks";
 import { revalidatePath } from "next/cache";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; //5mb max
 const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/webp"];
+
+export async function uploadResumeAction(formData) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    return { success: false, error: "Unauthorized access." };
+  }
+
+  const file = formData.get("resume");
+  if (!file || !(file instanceof File) || file.size === 0) {
+    return { success: false, error: "Please select a PDF file." };
+  }
+
+  if (!ALLOWED_RESUME_TYPES.includes(file.type)) {
+    return { success: false, error: "Only PDF files are allowed." };
+  }
+
+  if (file.size > MAX_RESUME_SIZE) {
+    return { success: false, error: "Resume PDF must be smaller than 5MB." };
+  }
+
+  try {
+    const updatedProfile = await uploadResumeFile(user.id, file);
+    revalidatePath("/");
+    revalidatePath("/admin/profile");
+    return { success: true, data: updatedProfile };
+  } catch (err) {
+    return { success: false, error: err.message || "Failed to upload resume." };
+  }
+}
+
+export async function deleteResumeAction() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    return { success: false, error: "Unauthorized access." };
+  }
+
+  try {
+    const updatedProfile = await removeResumeFile(user.id);
+    revalidatePath("/");
+    revalidatePath("/admin/profile");
+    return { success: true, data: updatedProfile };
+  } catch (err) {
+    return { success: false, error: err.message || "Failed to remove resume." };
+  }
+}
+
+export async function createSocialLinkAction(rawData) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    return { success: false, error: "Unauthorized access." };
+  }
+
+  const validation = socialLinkSchema.safeParse(rawData);
+  if (!validation.success) {
+    return { success: false, error: validation.error.issues[0].message };
+  }
+
+  try {
+    const newLink = await insertSocialLinkRecord({
+      user_id: user.id,
+      platform: validation.data.platform,
+      url: validation.data.url,
+    });
+
+    revalidatePath("/");
+    revalidatePath("/admin/profile");
+    return { success: true, data: newLink };
+  } catch (err) {
+    return {
+      success: false,
+      error: err.message || "Failed to add social link.",
+    };
+  }
+}
+
+export async function deleteSocialLinkAction(linkId) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    return { success: false, error: "Unauthorized access." };
+  }
+
+  try {
+    await deleteSocialLinkRecord(linkId, user.id);
+    revalidatePath("/");
+    revalidatePath("/admin/profile");
+    return { success: true };
+  } catch (err) {
+    return { success: false, error: err.message || "Failed to delete link." };
+  }
+}
 
 export async function UpdateProfileAction(formData) {
   const supabase = await createClient();
@@ -53,7 +173,10 @@ export async function UpdateProfileAction(formData) {
     .single();
 
   if (profileError) {
-    console.error("Error fetching profile before update:", profileError.message);
+    console.error(
+      "Error fetching profile before update:",
+      profileError.message,
+    );
     return { success: false, error: "Could not load your current profile." };
   }
 
