@@ -215,7 +215,7 @@ export default function AddProjectsForm({
         <div className="flex flex-col gap-2">
           <div className="flex flex-col gap-1.5">
             <label htmlFor="techstack" className="text-sm text-gray-500">
-              Projec Tech Stack
+              Project Tech Stack
             </label>
             <div className="flex gap-2">
               <input
@@ -246,7 +246,7 @@ export default function AddProjectsForm({
                 <div
                   key={index}
                   onClick={() => handleRemoveTech(index)}
-                  className="border border-gray-300 rounded-sm px-2 py-1 bg-white cursor-pointer"
+                  className="inline-flex items-center gap-1.5 border border-gray-300 rounded-sm px-2 py-1 bg-white hover:border-red-400 hover:bg-red-50 hover:text-red-600 transition-colors cursor-pointer disabled:opacity-50"
                 >
                   <p className="text-[11px]">{tech}</p>
                 </div>
