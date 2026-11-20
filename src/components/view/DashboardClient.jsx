@@ -43,9 +43,9 @@ export default function DashboardClientView({ data }) {
         {/* Top Header + Live Portfolio Link */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div className="flex flex-col">
-            <h1 className="text-lg font-bold">Dashboard.</h1>
+            <h1 className="text-lg font-bold">Dashboard</h1>
             <span className="text-gray-500 text-sm">
-              Overview of your portfolio performance and content.
+              Overview of your portfolio performance and content
             </span>
           </div>
 
