@@ -79,9 +79,9 @@ export default function ProfileClientView({ initialProfile }) {
       ) : (
         <div className="flex flex-1 flex-col gap-6 p-5">
           <div className="flex flex-col">
-            <h1 className="text-lg font-bold">Profile.</h1>
+            <h1 className="text-lg font-bold">Profile</h1>
             <span className="text-gray-500 text-sm">
-              Manage your profile information.
+              Manage your profile information
             </span>
           </div>
 

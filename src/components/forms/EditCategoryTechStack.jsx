@@ -269,15 +269,12 @@ export default function EditCategoryTechStack({
                     className="inline-flex items-center gap-1.5 border border-gray-300 rounded-sm px-2 py-1 bg-white hover:border-red-400 hover:bg-red-50 hover:text-red-600 transition-colors cursor-pointer disabled:opacity-50"
                   >
                     <span className="text-[11px]">{tech.name}</span>
-                    <span className="text-[11px] font-bold leading-none">
-                      ×
-                    </span>
                   </button>
                 ))}
               </div>
             ) : (
               <p className="text-xs text-gray-400 italic">
-                No saved technologies in this category yet.
+                No saved technologies in this category yet
               </p>
             )}
           </div>
@@ -349,7 +346,7 @@ export default function EditCategoryTechStack({
       </form>
 
       {/* Delete Category Zone (Matching ProjectDetailsClient) */}
-      <div className="flex flex-col gap-1 md:gap-4 items-center md:items-baseline justify-center mt-4 pt-4 border-t border-gray-200">
+      <div className="flex flex-col gap-1 md:gap-4 items-center md:items-baseline justify-center mt-4">
         <Button
           type="button"
           variant="critical"
