@@ -20,3 +20,15 @@ export const profileSchema = z.object({
     .nullable(),
   address: z.string().trim().optional().or(z.literal("")),
 });
+
+export const socialLinkSchema = z.object({
+  platform: z
+    .string()
+    .trim()
+    .min(1, "Platform name is required.")
+    .max(50, "Platform name is too long."),
+  url: z.string().trim().url("Please enter a valid URL (including https://)."),
+});
+
+export const MAX_RESUME_SIZE = 5 * 1024 * 1024; // 5MB
+export const ALLOWED_RESUME_TYPES = ["application/pdf"];

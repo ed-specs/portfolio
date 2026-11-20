@@ -1,13 +1,29 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { FileText, Trash2, Plus } from "lucide-react";
 import Button from "../ui/Button";
 import Input from "../ui/Input";
-import { UpdateProfileAction } from "@/app/actions/profile";
 import ErrorBanner from "../ui/ErrorBanner";
+import {
+  UpdateProfileAction,
+  uploadResumeAction,
+  deleteResumeAction,
+  createSocialLinkAction,
+  deleteSocialLinkAction,
+} from "@/app/actions/profile";
+
+const PLATFORM_PRESETS = [
+  "GitHub",
+  "LinkedIn",
+  "Facebook",
+  "X / Twitter",
+  "Portfolio",
+];
 
 export default function EditProfile({
   initialData,
+  initialSocialLinks = [],
   onCancel,
   onSuccess,
   successMessage,
@@ -15,10 +31,28 @@ export default function EditProfile({
   const [formData, setFormData] = useState(initialData);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+
+  // Avatar state & refs
   const [previewUrl, setPreviewUrl] = useState(initialData.avatarurl || null);
   const fileInputRef = useRef(null);
   const avatarFileRef = useRef(null);
   const removeAvatarRef = useRef(false);
+
+  // Resume state & refs
+  const [resumeName, setResumeName] = useState(
+    initialData.resume_url
+      ? `${initialData.firstname}_${initialData.lastname}_Resume.pdf`
+      : null,
+  );
+  const resumeInputRef = useRef(null);
+  const resumeFileRef = useRef(null);
+  const removeResumeRef = useRef(false);
+
+  // Social links state
+  const [links, setLinks] = useState(initialSocialLinks);
+  const [newPlatform, setNewPlatform] = useState("");
+  const [newUrl, setNewUrl] = useState("");
+  const [deletedLinkIds, setDeletedLinkIds] = useState([]);
 
   useEffect(() => {
     if (!errorMsg) return;
@@ -53,6 +87,7 @@ export default function EditProfile({
 
   const age = calculateAge(formData.birthdate);
 
+  // --- Avatar Handlers ---
   const handleAvatarChange = async (event) => {
     const input = event.currentTarget;
     const file = input.files?.[0];
@@ -108,7 +143,6 @@ export default function EditProfile({
       setPreviewUrl(URL.createObjectURL(resizedFile));
       removeAvatarRef.current = false;
     } catch (error) {
-      console.error("Could not prepare profile photo:", error);
       setErrorMsg(
         error instanceof Error
           ? error.message
@@ -125,34 +159,164 @@ export default function EditProfile({
     removeAvatarRef.current = Boolean(initialData.avatarurl);
   };
 
+  // --- Resume Handlers ---
+  const handleResumeChange = (event) => {
+    const input = event.currentTarget;
+    const file = input.files?.[0];
+    if (!file) return;
+
+    input.value = "";
+
+    if (file.type !== "application/pdf") {
+      setErrorMsg("Only PDF files are allowed for your resume.");
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setErrorMsg("Resume PDF must be 5MB or less.");
+      return;
+    }
+
+    resumeFileRef.current = file;
+    setResumeName(file.name);
+    removeResumeRef.current = false;
+  };
+
+  const handleRemoveResume = () => {
+    resumeFileRef.current = null;
+    setResumeName(null);
+    removeResumeRef.current = Boolean(initialData.resume_url);
+  };
+
+  // --- Social Links Handlers ---
+  const handleAddLinkToQueue = () => {
+    const trimmedPlatform = newPlatform.trim();
+    const trimmedUrl = newUrl.trim();
+
+    if (!trimmedPlatform || !trimmedUrl) {
+      setErrorMsg("Enter both a platform name and a valid URL.");
+      return;
+    }
+
+    try {
+      new URL(trimmedUrl);
+    } catch {
+      setErrorMsg("Please enter a valid URL starting with https://");
+      return;
+    }
+
+    const exists = links.some(
+      (l) => l.platform.toLowerCase() === trimmedPlatform.toLowerCase(),
+    );
+    if (exists) {
+      setErrorMsg(`${trimmedPlatform} is already in your social links.`);
+      return;
+    }
+
+    setLinks((prev) => [
+      ...prev,
+      {
+        id: `temp-${crypto.randomUUID()}`,
+        platform: trimmedPlatform,
+        url: trimmedUrl,
+        isNew: true,
+      },
+    ]);
+    setNewPlatform("");
+    setNewUrl("");
+  };
+
+  const handleRemoveLinkFromQueue = (link) => {
+    if (!link.isNew) {
+      setDeletedLinkIds((prev) => [...prev, link.id]);
+    }
+    setLinks((prev) => prev.filter((item) => item.id !== link.id));
+  };
+
+  // --- Save Everything ---
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-
-    const data = new FormData();
-    data.append("firstname", formData.firstname ?? "");
-    data.append("middlename", formData.middlename ?? "");
-    data.append("lastname", formData.lastname ?? "");
-    data.append("email", formData.email ?? "");
-    data.append("phone", formData.phone ?? "");
-    data.append("birthdate", formData.birthdate ?? "");
-    data.append("age", age === null ? "" : String(age));
-    data.append("address", formData.address ?? "");
-
-    if (avatarFileRef.current) {
-      data.append("avatar", avatarFileRef.current);
-    }
-    data.append("removeAvatar", String(removeAvatarRef.current));
+    setErrorMsg("");
 
     try {
-      const result = await UpdateProfileAction(data);
+      // 1. Update core profile fields + avatar
+      const data = new FormData();
+      data.append("firstname", formData.firstname ?? "");
+      data.append("middlename", formData.middlename ?? "");
+      data.append("lastname", formData.lastname ?? "");
+      data.append("email", formData.email ?? "");
+      data.append("phone", formData.phone ?? "");
+      data.append("birthdate", formData.birthdate ?? "");
+      data.append("age", age === null ? "" : String(age));
+      data.append("address", formData.address ?? "");
 
+      if (avatarFileRef.current) {
+        data.append("avatar", avatarFileRef.current);
+      }
+      data.append("removeAvatar", String(removeAvatarRef.current));
+
+      const result = await UpdateProfileAction(data);
       if (!result.success) {
         setErrorMsg(result.error);
         return;
       }
 
-      onSuccess(result.data);
+      let latestProfile = result.data;
+
+      // 2. Handle Resume upload or removal
+      if (resumeFileRef.current) {
+        const resumeFormData = new FormData();
+        resumeFormData.append("resume", resumeFileRef.current);
+        const resumeRes = await uploadResumeAction(resumeFormData);
+        if (!resumeRes.success) {
+          setErrorMsg(resumeRes.error);
+          return;
+        }
+        latestProfile = resumeRes.data;
+      } else if (removeResumeRef.current) {
+        const delResumeRes = await deleteResumeAction();
+        if (!delResumeRes.success) {
+          setErrorMsg(delResumeRes.error);
+          return;
+        }
+        latestProfile = delResumeRes.data;
+      }
+
+      // 3. Delete removed social links
+      for (const linkId of deletedLinkIds) {
+        const delRes = await deleteSocialLinkAction(linkId);
+        if (!delRes.success) {
+          setErrorMsg(delRes.error);
+          return;
+        }
+      }
+
+      // 4. Insert newly added social links (including any un-queued input)
+      const pendingLinks = links.filter((l) => l.isNew);
+      if (newPlatform.trim() && newUrl.trim()) {
+        pendingLinks.push({
+          platform: newPlatform.trim(),
+          url: newUrl.trim(),
+        });
+      }
+
+      const savedNewLinks = [];
+      for (const item of pendingLinks) {
+        const createRes = await createSocialLinkAction({
+          platform: item.platform,
+          url: item.url,
+        });
+        if (!createRes.success) {
+          setErrorMsg(createRes.error);
+          return;
+        }
+        savedNewLinks.push(createRes.data);
+      }
+
+      const finalLinks = [...links.filter((l) => !l.isNew), ...savedNewLinks];
+
+      onSuccess(latestProfile, finalLinks);
       successMessage("Profile updated successfully.");
     } catch (error) {
       console.error("Could not save profile:", error);
@@ -161,12 +325,13 @@ export default function EditProfile({
       setIsLoading(false);
     }
   };
+
   return (
     <form onSubmit={handleSubmit} className="flex flex-1 flex-col gap-6 p-5">
       {errorMsg && <ErrorBanner message={errorMsg} />}
 
-      <div className=" flex flex-col md:flex-row items-center gap-6">
-        {/* image container */}
+      {/* Avatar Upload */}
+      <div className="flex flex-col md:flex-row items-center gap-6">
         <div className="flex size-24 md:size-26 lg:size-28 bg-gray-200 rounded-lg items-center justify-center text-3xl font-bold text-gray-500 overflow-hidden border border-gray-300 hover:border-black/90 transition-colors duration-300">
           {previewUrl ? (
             <img
@@ -182,7 +347,6 @@ export default function EditProfile({
           )}
         </div>
 
-        {/* upload and remove */}
         <div className="flex flex-col gap-2">
           <span className="text-gray-500 text-sm">Upload profile picture</span>
           <input
@@ -213,12 +377,8 @@ export default function EditProfile({
           </div>
         </div>
       </div>
-      {errorMsg && (
-        <p role="alert" className="text-sm text-red-600">
-          {errorMsg}
-        </p>
-      )}
 
+      {/* Core Personal Fields */}
       <div className="flex flex-col gap-3.5">
         <Input
           id="firstname"
@@ -300,12 +460,129 @@ export default function EditProfile({
           label="Address"
           type="text"
           value={formData?.address ?? ""}
-          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+          onChange={(e) =>
+            setFormData({ ...formData, address: e.target.value })
+          }
           disabled={isLoading}
           required
         />
       </div>
 
+      {/* Social Links Manager */}
+      <div className="flex flex-col gap-3 mt-2">
+        <span className="text-gray-500 text-sm ">Social Links</span>
+
+        <div className="flex flex-col sm:flex-row gap-2">
+          <div className="sm:w-1/3">
+            <input
+              type="text"
+              list="platform-presets"
+              placeholder="Platform (e.g., GitHub)"
+              value={newPlatform}
+              onChange={(e) => setNewPlatform(e.target.value)}
+              disabled={isLoading}
+              className="border w-full border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-black/90 transition-colors"
+            />
+            <datalist id="platform-presets">
+              {PLATFORM_PRESETS.map((p) => (
+                <option key={p} value={p} />
+              ))}
+            </datalist>
+          </div>
+
+          <div className="flex flex-1 gap-2">
+            <input
+              type="url"
+              placeholder="https://github.com/yourusername"
+              value={newUrl}
+              onChange={(e) => setNewUrl(e.target.value)}
+              disabled={isLoading}
+              className="border w-full border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-black/90 transition-colors"
+            />
+            <Button
+              type="button"
+              variant="secondary"
+              disabled={isLoading}
+              onClick={handleAddLinkToQueue}
+            >
+              <span className="inline-flex items-center gap-1">
+                <Plus className="size-4" /> Add
+              </span>
+            </Button>
+          </div>
+        </div>
+
+        {links.length > 0 && (
+          <div className="flex flex-col gap-2">
+            {links.map((link) => (
+              <div
+                key={link.id}
+                className="flex items-center justify-between gap-3 rounded-lg border border-gray-300 bg-gray-50 px-3.5 py-2 text-xs"
+              >
+                <div className="flex flex-col min-w-0">
+                  <span className="font-bold text-sm">{link.platform}</span>
+                  <span className="text-gray-500 truncate">{link.url}</span>
+                </div>
+                <button
+                  type="button"
+                  disabled={isLoading}
+                  onClick={() => handleRemoveLinkFromQueue(link)}
+                  className="text-gray-400 hover:text-red-600 transition-colors cursor-pointer p-1"
+                  title={`Remove ${link.platform}`}
+                >
+                  <Trash2 className="size-4" />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Resume PDF Upload Section */}
+      <div className="flex flex-col gap-2 mt-2">
+        <span className="text-gray-500 text-sm ">
+          Resume / CV (PDF, Max 5MB)
+        </span>
+        <input
+          ref={resumeInputRef}
+          type="file"
+          accept="application/pdf"
+          className="sr-only"
+          onChange={handleResumeChange}
+          disabled={isLoading}
+        />
+
+        <div className="rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 flex flex-col items-center justify-center gap-6 py-12 px-6">
+          <div className="flex items-center gap-3">
+            {/* <FileText className="size-5 text-gray-600 shrink-0" /> */}
+            <span className="text-sm">
+              {resumeName || "No PDF file selected"}
+            </span>
+          </div>
+
+          <div className="flex gap-2">
+            <Button
+              type="button"
+              variant="primary"
+              disabled={isLoading}
+              onClick={() => resumeInputRef.current?.click()}
+            >
+              {resumeName ? "Replace PDF" : "Upload PDF"}
+            </Button>
+            {resumeName && (
+              <Button
+                type="button"
+                variant="secondary"
+                disabled={isLoading}
+                onClick={handleRemoveResume}
+              >
+                Remove
+              </Button>
+            )}
+          </div>
+        </div>
+      </div>
+      {/* Form Actions */}
       <div className="flex items-center justify-end gap-2">
         <Button
           disabled={isLoading}
