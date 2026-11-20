@@ -19,7 +19,7 @@ export async function getDashboardOverview() {
   ] = await Promise.all([
     getPageViewStats(),
     user
-      ? supabase.from("profiles").select("*").eq("id", user.id).maybeSingle()
+      ? supabase.from("profile").select("*").eq("id", user.id).maybeSingle()
       : Promise.resolve({ data: null }),
     supabase
       .from("projects")
