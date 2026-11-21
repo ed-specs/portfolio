@@ -23,7 +23,7 @@ export default function ProjectDetailsClient({
   const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
-    if (!errorMsg) return;
+    if (!errorMsg || !successMsg) return;
 
     const timer = setTimeout(() => {
       setErrorMsg("");
