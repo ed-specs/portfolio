@@ -328,6 +328,13 @@ export default function EditProfile({
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-1 flex-col gap-6 p-5">
+      <div className="flex flex-col">
+        <h1 className="text-lg font-bold">Edit Profile</h1>
+        <span className="text-gray-500 text-sm">
+          Edit your profile information
+        </span>
+      </div>
+
       {errorMsg && <ErrorBanner message={errorMsg} />}
 
       {/* Avatar Upload */}
@@ -379,7 +386,7 @@ export default function EditProfile({
       </div>
 
       {/* Core Personal Fields */}
-      <div className="flex flex-col gap-3.5">
+      <div className="flex flex-col gap-4">
         <Input
           id="firstname"
           label="First Name"
