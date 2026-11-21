@@ -67,7 +67,7 @@ export default function DashboardClientView({ data }) {
               <span className="text-xs font-medium">Portfolio Views</span>
               <Eye className="size-4" />
             </div>
-            <div className="flex items-baseline gap-2">
+            <div className="flex flex-col">
               <span className="text-2xl font-bold">{stats.totalViews}</span>
               <span className="text-xs text-gray-300">
                 (+{stats.last7DaysViews} this week)
@@ -84,9 +84,11 @@ export default function DashboardClientView({ data }) {
               <span className="text-xs font-medium">Projects</span>
               <FolderKanban className="size-4" />
             </div>
-            <div className="flex items-baseline justify-between">
+            <div className="flex flex-col">
               <span className="text-2xl font-bold">{stats.totalProjects}</span>
-              <span className="text-xs text-gray-400">Manage &rarr;</span>
+              <div className="flex items-center justify-end">
+                <span className="text-xs text-gray-500">Manage &rarr;</span>
+              </div>
             </div>
           </Link>
 
@@ -99,15 +101,17 @@ export default function DashboardClientView({ data }) {
               <span className="text-xs font-medium">Work Experience</span>
               <Briefcase className="size-4" />
             </div>
-            <div className="flex items-baseline justify-between gap-2">
+            <div className="flex flex-col ">
               <span className="text-2xl font-bold">
                 {stats.totalExperiences}
               </span>
-              <span className="text-xs text-gray-400 truncate">
-                {stats.currentRole
-                  ? `Active: ${stats.currentRole.company}`
-                  : "Manage →"}
-              </span>
+              <div className="flex items-center justify-end">
+                <span className="text-xs text-gray-500 truncate">
+                  {stats.currentRole
+                    ? `Active: ${stats.currentRole.company}`
+                    : "Manage →"}
+                </span>
+              </div>
             </div>
           </Link>
 
@@ -120,11 +124,11 @@ export default function DashboardClientView({ data }) {
               <span className="text-xs font-medium">Tech Stacks</span>
               <Layers className="size-4" />
             </div>
-            <div className="flex items-baseline justify-between">
+            <div className="flex flex-col ">
               <span className="text-2xl font-bold">
                 {stats.totalTechStacks}
               </span>
-              <span className="text-xs text-gray-400">
+              <span className="text-xs text-gray-500">
                 Across {stats.totalCategories}{" "}
                 {stats.totalCategories === 1 ? "category" : "categories"}
               </span>
@@ -185,7 +189,7 @@ export default function DashboardClientView({ data }) {
             <div className="flex flex-col gap-3">
               <h2 className="text-sm font-bold">Top Traffic Sources (7d)</h2>
               {analytics.topReferrers.length === 0 ? (
-                <p className="text-xs text-gray-400 italic">
+                <p className="text-xs text-gray-500 italic">
                   No visitor traffic recorded in the last 7 days yet.
                 </p>
               ) : (
@@ -219,124 +223,83 @@ export default function DashboardClientView({ data }) {
           </div>
         </div>
 
-        {/* 3. Portfolio Readiness Checklist + Recent Projects */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {/* Portfolio Completeness Checklist */}
-          <div className="rounded-lg border border-gray-300 p-5 flex flex-col gap-4">
+        <div className="rounded-lg border border-gray-300 p-5 flex flex-col justify-between gap-4">
+          <div className="flex flex-col gap-3">
             <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-sm font-bold">Portfolio Readiness</h2>
-                <p className="text-xs text-gray-500">
-                  Complete all sections before sharing your link
-                </p>
-              </div>
-              <span className="text-xs font-bold border border-gray-300 rounded-md px-2.5 py-1">
-                {readinessPercent}%
-              </span>
-            </div>
-
-            {/* Progress Bar */}
-            <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
-              <div
-                style={{ width: `${readinessPercent}%` }}
-                className="h-full bg-black/90 transition-all duration-500"
-              />
-            </div>
-
-            <div className="flex flex-col gap-2.5">
-              {checklist.map((item) => (
-                <Link
-                  key={item.label}
-                  href={item.href}
-                  className="flex items-center justify-between text-xs p-2 rounded-md hover:bg-gray-50 transition-colors"
-                >
-                  <div className="flex items-center gap-2.5">
-                    {item.completed ? (
-                      <CheckCircle2 className="size-4 text-green-600 shrink-0" />
-                    ) : (
-                      <Circle className="size-4 text-gray-400 shrink-0" />
-                    )}
-                    <span
-                      className={
-                        item.completed
-                          ? "text-gray-500 line-through"
-                          : "text-gray-800 font-medium"
-                      }
-                    >
-                      {item.label}
-                    </span>
-                  </div>
-                  <span className="text-gray-400">
-                    {item.completed ? "Done" : "Setup →"}
-                  </span>
-                </Link>
-              ))}
-            </div>
-          </div>
-
-          {/* Recently Updated Projects + Quick Actions */}
-          <div className="rounded-lg border border-gray-300 p-5 flex flex-col justify-between gap-4">
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center justify-between">
-                <h2 className="text-sm font-bold">Recently Updated Projects</h2>
-                <Link
-                  href="/admin/projects"
-                  className="text-xs text-gray-500 hover:text-black/90"
-                >
-                  View all
-                </Link>
-              </div>
-
-              {recentProjects.length === 0 ? (
-                <p className="text-xs text-gray-400 italic py-4">
-                  No projects created yet.
-                </p>
-              ) : (
-                <div className="flex flex-col gap-2">
-                  {recentProjects.map((project) => (
-                    <div
-                      key={project.id}
-                      className="flex items-center justify-between border border-gray-200 rounded-md px-3 py-2.5 text-xs"
-                    >
-                      <span className="font-medium truncate">
-                        {project.title}
-                      </span>
-                      <span className="text-gray-400 shrink-0">
-                        {new Date(project.updated_at).toLocaleDateString(
-                          "en-US",
-                          {
-                            month: "short",
-                            day: "numeric",
-                            year: "numeric",
-                          },
-                        )}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            <div className="flex flex-wrap gap-2 pt-3 border-t border-gray-200">
+              <h2 className="text-sm font-bold">Recently Updated Projects</h2>
               <Link
                 href="/admin/projects"
-                className="text-xs border border-gray-300 rounded-md px-3 py-1.5 hover:border-black/90 transition-colors"
+                className="text-xs text-gray-500 hover:text-black/90"
               >
-                + Projects
-              </Link>
-              <Link
-                href="/admin/experience"
-                className="text-xs border border-gray-300 rounded-md px-3 py-1.5 hover:border-black/90 transition-colors"
-              >
-                + Experience
-              </Link>
-              <Link
-                href="/admin/tech-stacks"
-                className="text-xs border border-gray-300 rounded-md px-3 py-1.5 hover:border-black/90 transition-colors"
-              >
-                + Tech Stack
+                View all
               </Link>
             </div>
+
+            {recentProjects.length === 0 ? (
+              <div className="rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 flex flex-col items-center justify-center gap-6 py-12 px-6">
+                <div className="flex flex-col items-center justify-center gap-1">
+                  <h1 className=" font-bold">No Projects Available</h1>
+
+                  <span className="text-gray-500 text-sm text-center">
+                    There are no current available projects
+                  </span>
+                </div>
+                <div className="flex items-center justify-center">
+                  <div className="flex items-center">
+                    <Link
+                      href="/admin/projects"
+                      className="inline-flex items-center justify-center gap-1.5 border border-gray-300 rounded-lg px-3.5 py-2 text-xs font-medium bg-white hover:border-black/90 transition-colors duration-300 w-fit"
+                    >
+                      <span>Go To Projects</span>
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-2">
+                {recentProjects.map((project) => (
+                  <div
+                    key={project.id}
+                    className="flex items-center justify-between border border-gray-200 rounded-md px-3 py-2.5 text-xs"
+                  >
+                    <span className="font-medium truncate">
+                      {project.title}
+                    </span>
+                    <span className="text-gray-500 shrink-0">
+                      {new Date(project.updated_at).toLocaleDateString(
+                        "en-US",
+                        {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                        },
+                      )}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="flex flex-wrap items-center justify-end gap-2 pt-3 border-t border-gray-200">
+            <Link
+              href="/admin/projects"
+              className="text-xs border border-gray-300 rounded-md px-3 py-1.5 hover:border-black/90 transition-colors"
+            >
+              + Projects
+            </Link>
+            <Link
+              href="/admin/experience"
+              className="text-xs border border-gray-300 rounded-md px-3 py-1.5 hover:border-black/90 transition-colors"
+            >
+              + Experience
+            </Link>
+            <Link
+              href="/admin/tech-stacks"
+              className="text-xs border border-gray-300 rounded-md px-3 py-1.5 hover:border-black/90 transition-colors"
+            >
+              + Tech Stack
+            </Link>
           </div>
         </div>
       </div>

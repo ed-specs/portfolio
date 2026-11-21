@@ -89,7 +89,7 @@ export default function AboutMeClient({ initialAbout }) {
               <div className="flex flex-col gap-1.5">
                 <span className="text-gray-500 text-sm">About Me</span>
                 <div
-                  className="p-5 text-sm rounded-lg border border-gray-300 hover:border-black/90 transition-colors duration-300  min-h-60"
+                  className="p-5 text-sm rounded-lg border border-gray-300 hover:border-black/90 transition-colors duration-300 prose prose-sm max-w-full"
                   dangerouslySetInnerHTML={{
                     __html: DOMPurify.sanitize(about),
                   }}
